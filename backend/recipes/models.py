@@ -3,8 +3,9 @@ from django.core.validators import MinValueValidator
 from users.models import User
 from .tags_color import TagsColor
 
+
 class Tag(models.Model):
-    """Модель тегов для рецептов."""
+    '''Модель тегов для рецептов.'''
 
     name = models.CharField(
         verbose_name='Название тега',
@@ -13,9 +14,9 @@ class Tag(models.Model):
 
     color = models.CharField(
         verbose_name='Цвета в HEX-color',
-        max_length=7, unique=True,
+        max_length=66, unique=True,
         default=TagsColor.CHOCOLATE,
-        choices=TagsColor.TAGS,
+        choices=TagsColor.choices,
         help_text='Выбрать цвет')
 
     slug = models.SlugField(
@@ -24,7 +25,7 @@ class Tag(models.Model):
         help_text='Укажите уникальный слаг')
 
     class Meta:
-        verbose_name = "Тег"
+        verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
     def __str__(self):
@@ -32,7 +33,7 @@ class Tag(models.Model):
 
 
 class Ingridient(models.Model):
-    """Модель для ингридентов"""
+    '''Модель для ингридентов'''
     name = models.CharField(
         verbose_name='Название ингредиента',
         max_length=200,
@@ -54,8 +55,8 @@ class Ingridient(models.Model):
 
 
 
-class Recipe(models.model):
-    "Модель рецептов"
+class Recipe(models.Model):
+    'Модель рецептов'
 
     author = models.ForeignKey(
         User,
@@ -99,6 +100,40 @@ class Recipe(models.model):
             models.UniqueConstraint(
                 fields=['name', 'author'],
                 name='unique_recipe')]
+
+
+class IngredientRecipe(models.Model):
+    '''
+    Промежуточная модель для таблиц:
+      Recipe и Ingredient
+    '''
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='recipe_ingredients',
+        verbose_name='Название рецепта',
+        on_delete=models.CASCADE,
+        help_text='Выберите рецепт')
+    ingredient = models.ForeignKey(
+        Ingridient,
+        verbose_name='Ингредиент',
+        on_delete=models.CASCADE,
+        help_text='Укажите ингредиенты')
+    amount = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1, 'Минимальное количество ингредиентов 1')],
+        verbose_name='Количество',
+        help_text='Укажите количество ингредиента')
+
+    class Meta:
+        verbose_name = 'Cостав рецепта'
+        verbose_name_plural = 'Состав рецепта'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='unique_ingredients')]
+
+    def __str__(self):
+        return f'{self.ingredient} {self.amount}'
 
 
 class Follow(models.Model):
