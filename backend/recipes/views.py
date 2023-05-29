@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from recipes.models import Recipe
 
-# Create your views here.
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()

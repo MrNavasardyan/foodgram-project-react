@@ -5,7 +5,7 @@ from .tags_color import TagsColor
 
 
 class Tag(models.Model):
-    '''Модель тегов для рецептов.'''
+    '''Модель тегов.'''
 
     name = models.CharField(
         verbose_name='Название тега',
@@ -33,7 +33,7 @@ class Tag(models.Model):
 
 
 class Ingridient(models.Model):
-    '''Модель для ингридентов'''
+    '''Модель ингридентов'''
     name = models.CharField(
         verbose_name='Название ингредиента',
         max_length=200,
@@ -56,7 +56,7 @@ class Ingridient(models.Model):
 
 
 class Recipe(models.Model):
-    'Модель рецептов'
+    '''Модель рецептов'''
 
     author = models.ForeignKey(
         User,
@@ -153,3 +153,52 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'Пользователь {self.user} подписан на {self.author}'
+
+
+
+class Favorite(models.Model):
+    '''Cписок избранного'''
+    author = models.ForeignKey(
+        User,
+        related_name='favorite',
+        on_delete=models.CASCADE,
+        verbose_name='Автор рецепта')
+
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='favorite',
+        on_delete=models.CASCADE,
+        verbose_name='Рецепты')
+
+    class Meta:
+        verbose_name = 'Избранные рецепты'
+        verbose_name_plural = 'Избранные рецепты'
+        constraints = [models.UniqueConstraint(
+            fields=['author', 'recipe'],
+            name='unique_favorite')]
+
+    def __str__(self):
+        return f'{self.recipe}'
+
+
+class ShoppingCart(models.Model):
+    '''Список покупок'''
+
+    author = models.ForeignKey(
+        User,
+        related_name='shopping_cart',
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь')
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='shopping_cart',
+        verbose_name='Рецепт для приготовления',
+        on_delete=models.CASCADE,
+        help_text='Выберите рецепт для приготовления')
+
+    class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
+        constraints = [models.UniqueConstraint(
+            fields=['author', 'recipe'],
+            name='unique_cart')]
