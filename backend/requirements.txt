@@ -27,7 +27,7 @@ oauthlib==3.2.2
 packaging==23.1
 pep8==1.7.1
 Pillow==9.5.0
-psycopg2==2.9.6
+psycopg-binary==3.1.9
 pycodestyle==2.10.0
 pycparser==2.21
 PyJWT==2.6.0
