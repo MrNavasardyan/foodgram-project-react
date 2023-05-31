@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from recipes.models import Recipe, Ingridient, Favorite, Follow, ShoppingCart, Tag
-from recipes.serializers import RecipeCreateSerializer, RecipeReadSerializer, IngredientSerializer, TagSerializer, FavoriteSerializer, ShoppingCartSerializer
+from api.serializers import RecipeCreateSerializer, RecipeReadSerializer, IngredientSerializer, TagSerializer, FavoriteSerializer, ShoppingCartSerializer
 from .permissions import IsCurrentUserOrAdminOrGuest, IsOwnerOrAdminOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from django.shortcuts import get_object_or_404
