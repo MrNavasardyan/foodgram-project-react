@@ -7,10 +7,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_ORIGINS = ['http://*', 'https://*']
-
-CSRF_TRUSTED_ORIGINS = ALLOWED_ORIGINS.copy()
-
 CSRF_TRUSTED_ORIGINS=['http://*','https://*']
 
 CSRF_COOKIE_SECURE = False
@@ -24,7 +20,12 @@ SECRET_KEY = 'django-insecure-049t^zq^-bv*(pu#pul!-ndd=a8j^wt&&^ix66^2%vil6jfuyz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'backend',
+    'localhost',
+    '*'
+]
 
 AUTH_USER_MODEL = "users.User"
 
