@@ -112,8 +112,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         '''
-        Скачать список покупок для выбранных рецептов,
-        данные суммируются.
+        Скачать список покупок.
         '''
         author = User.objects.get(id=self.request.user.pk)
         if author.shopping_cart.exists():
