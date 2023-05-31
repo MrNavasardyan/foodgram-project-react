@@ -7,6 +7,7 @@ class CustomUserManager(BaseUserManager):
     Кастомная модель менеджера для модели User,
     где email является уникальным идентификатором.
     '''
+
     def create_user(self, email, password, **extra_fields):
         '''
         Создание пользователя с заданным email и password

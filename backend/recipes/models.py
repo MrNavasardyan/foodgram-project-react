@@ -54,7 +54,6 @@ class Ingridient(models.Model):
         return f'{self.name}'
 
 
-
 class Recipe(models.Model):
     '''Модель рецептов'''
 
@@ -89,7 +88,6 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         validators=[MinValueValidator(1, 'Минимальное время приготовления')],
         help_text='Укажите время приготовления рецепта в минутах')
-
 
     class Meta:
         ordering = ['-id']
@@ -153,7 +151,6 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'Пользователь {self.user} подписан на {self.author}'
-
 
 
 class Favorite(models.Model):

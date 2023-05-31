@@ -79,7 +79,7 @@ DATABASES = {
 
 DJOSER = {
     'HIDE_USERS': False,
-    'PERMISSIONS':{
+    'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
     },
     'SERIALIZERS': {

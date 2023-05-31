@@ -6,6 +6,7 @@ from .userroles import UserRoles
 
 from .managers import CustomUserManager
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Пользователи."""
     username = models.CharField('Логин', max_length=150, unique=True)
@@ -43,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.role == UserRoles.ADMIN:
             return True
         return False
-
 
     def __str__(self):
         return self.email

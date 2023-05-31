@@ -25,6 +25,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('id', 'name', 'image', 'coocking_time')
 
+
 class TagSerializer(serializers.ModelSerializer):
     '''Serializer для модели Tag.'''
     class Meta:
@@ -133,7 +134,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
-
 
 
 class IngredientSerializer(serializers.ModelSerializer):
