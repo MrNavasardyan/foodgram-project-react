@@ -12,7 +12,7 @@ from api.filters import IngredientSearchFilter
 from .paginations import CustomPagintaion
 from django_filters.rest_framework import DjangoFilterBackend
 from api.filters import IngredientSearchFilter, RecipeFilter
-
+from utils import shopping_cart
 
 class TagViewSet(mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
