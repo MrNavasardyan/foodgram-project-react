@@ -224,7 +224,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return False
         user = request.user
-        return ShoppingCart.objects.filter(recipe=obj, user=user).exists()
+        return ShoppingCart.objects.filter(recipe=obj, author=user).exists()
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
