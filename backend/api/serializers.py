@@ -113,7 +113,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         source='recipe.image',
         read_only=True)
     coocking_time = serializers.IntegerField(
-        source='recipe.cook_time',
+        source='recipe.cooking_time',
         read_only=True)
     id = serializers.PrimaryKeyRelatedField(
         source='recipe',
@@ -141,7 +141,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         source='recipe.image',
         read_only=True)
     coocking_time = serializers.IntegerField(
-        source='recipe.cook_time',
+        source='recipe.cooking_time',
         read_only=True)
     id = serializers.PrimaryKeyRelatedField(
         source='recipe',
@@ -168,11 +168,11 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
-        source='ingridient.id')
+        source='ingredient.id')
     name = serializers.ReadOnlyField(
-        source='ingridient.name')
+        source='ingredient.name')
     measurement = serializers.ReadOnlyField(
-        source='ingridient.measurement')
+        source='ingredient.measurement')
 
     class Meta:
         model = IngredientRecipe
@@ -201,7 +201,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
-                  'name', 'image', 'text', 'cook_time')
+                  'name', 'image', 'text', 'cooking_time')
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
@@ -231,8 +231,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
-                  'name', 'text', 'cook_time', 'author')
-
+                  'name', 'text', 'cooking_time', 'author')
 
     def validate_ingredients(self, value):
             ingredients = value
@@ -298,8 +297,3 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingridient
         fields = '__all__'
 
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
