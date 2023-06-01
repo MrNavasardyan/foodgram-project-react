@@ -215,7 +215,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        user = request.author
+        user = request.user
         return Favorite.objects.filter(recipe=obj, author=user).exists()
 
 
