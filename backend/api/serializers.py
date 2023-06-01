@@ -3,7 +3,102 @@ from rest_framework.validators import UniqueValidator
 from recipes.models import Recipe, Ingridient, Tag, IngredientRecipe, ShoppingCart, Favorite, Follow
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
-from users.serializers import UserSerializer
+from rest_framework import serializers
+from users.validators import validate_email
+from users.models import User
+from django.core.validators import RegexValidator
+from rest_framework.validators import UniqueValidator
+from djoser.serializers import UserSerializer, TokenCreateSerializer
+from rest_framework.exceptions import ValidationError
+
+class CustomUserCreateSerializer(UserSerializer):
+    email = serializers.EmailField(
+        max_length=254, allow_blank=False, validators=[validate_email]
+    )
+    username = serializers.CharField(
+        max_length=150,
+        allow_blank=False,
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+-]+\Z', message='Введите корректный username'
+            ),
+            UniqueValidator(queryset=User.objects.all()),
+        ],
+    )
+    first_name = serializers.CharField(max_length=150, required=True)
+    last_name = serializers.CharField(max_length=150, required=True)
+    password = serializers.CharField(max_length=150, required=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'first_name', 'last_name', 'password')
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class CustomTokenCreateSerializer(TokenCreateSerializer):
+    email = serializers.EmailField(
+        max_length=254, required=True
+    )
+    password = serializers.CharField(
+        required=True, style={
+            "input_type": "password"})
+
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    """Serializer для модели Follow."""
+    email = serializers.ReadOnlyField(source='author.email')
+    id = serializers.ReadOnlyField(source='author.id')
+    username = serializers.ReadOnlyField(source='author.username')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Follow
+        fields = ('email', 'id', 'username', 'first_name',
+                  'last_name', 'is_subscribed', 'recipes', 'recipes_count')
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if not user.is_anonymous:
+            return Follow.objects.filter(
+                user=obj.user,
+                author=obj.author).exists()
+        return False
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        recipes = Recipe.objects.filter(author=obj.author)
+        if limit and limit.isdigit():
+            recipes = recipes[:int(limit)]
+        return api.serializers.RecipeMiniSerializer(recipes, many=True).data
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj.author).count()
+
+    def validate(self, data):
+        author = self.context.get('author')
+        user = self.context.get('request').user
+        if Follow.objects.filter(
+                author=author,
+                user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST)
+        if user == author:
+            raise ValidationError(
+                detail='Невозможно подписаться на себя!',
+                code=status.HTTP_400_BAD_REQUEST)
+        return data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
