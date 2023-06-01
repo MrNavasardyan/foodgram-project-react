@@ -117,11 +117,12 @@ class IngredientViewSet(mixins.ListModelMixin,
     search_fields = ('^name',)
 
 
+
 class RecipeViewSet(viewsets.ModelViewSet):
     '''Вьюсет модели Recipe: [GET, POST, DELETE, PATCH].'''
     queryset = Recipe.objects.all()
-    permission_classes = (IsOwnerOrAdminOrReadOnly, )
-    pagination_class = CustomPagintaion
+    permission_classes = (AllowAny, )
+    # pagination_class = CustomPagintaion
     filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
 
