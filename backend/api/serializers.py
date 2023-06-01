@@ -176,11 +176,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
-        source='Ingredient.id')
+        source='ingredient.id')
     name = serializers.ReadOnlyField(
-        source='Ingredient.name')
+        source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source='Ingredient.measurement_unit')
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = IngredientRecipe
@@ -255,8 +255,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 if int(item['amount']) <= 0:
                     raise ValidationError(
                     {'amount': 'Количество должно быть больше 0!'})
-                    ingredients_list.append(ingredient)
-                    return value
+                ingredients_list.append(ingredient)
+            return value
 
     def validate_tags(self, value):
         tags = value
@@ -298,3 +298,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.ingredients.clear()
         self.add_tags_ingredients(ingredients, tags, instance)
         return super().update(instance, validated_data)
+
+
+class RecipeMiniSerializer(serializers.ModelSerializer):
+    """Сериализатор предназначен для вывода рецептом в FollowSerializer."""
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'cooking_time', 'image',)
