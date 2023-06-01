@@ -107,8 +107,8 @@ DJOSER = {
         'user': ['rest_framework.permissions.IsAuthenticated'],
     },
     'SERIALIZERS': {
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
-        'token_create': 'users.serializers.CustomTokenCreateSerializer'},
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+        'token_create': 'api.serializers.CustomTokenCreateSerializer'},
 }
 
 REST_FRAMEWORK = {

@@ -11,6 +11,7 @@ from rest_framework.validators import UniqueValidator
 from djoser.serializers import UserSerializer, TokenCreateSerializer
 from rest_framework.exceptions import ValidationError
 
+
 class CustomUserCreateSerializer(UserSerializer):
     email = serializers.EmailField(
         max_length=254, allow_blank=False, validators=[validate_email]
