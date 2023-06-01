@@ -67,7 +67,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True,
             methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
-
     def subscribe(self, request, *args, **kwargs):
         """Создание и удаление подписки."""
         author = get_object_or_404(User, id=self.kwargs.get('pk'))
@@ -88,6 +87,8 @@ class UserViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_204_NO_CONTENT)
         return Response({'errors': 'Объект не найден'},
                         status=status.HTTP_404_NOT_FOUND)
+
+
 
     @action(detail=False,
             methods=['get'],

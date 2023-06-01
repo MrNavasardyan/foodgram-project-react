@@ -83,7 +83,7 @@ class FollowSerializer(serializers.ModelSerializer):
         recipes = Recipe.objects.filter(author=obj.author)
         if limit and limit.isdigit():
             recipes = recipes[:int(limit)]
-        return api.serializers.RecipeMiniSerializer(recipes, many=True).data
+        return RecipeMiniSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj.author).count()
@@ -303,10 +303,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-
-
 class RecipeMiniSerializer(serializers.ModelSerializer):
-    """Сериализатор предназначен для вывода рецептом в FollowSerializer."""
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'cooking_time', 'image',)
