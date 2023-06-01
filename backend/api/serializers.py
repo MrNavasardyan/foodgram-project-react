@@ -211,11 +211,22 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
 
+    # def get_is_favorited(self, obj):
+    #     user = self.context.get('request').user
+    #     if not user.is_anonymous:
+    #         return Favorite.objects.filter(recipe=obj).exists()
+    #     return False
+    def get_serializer_context(self):
+
+        return {
+              'request': self.request,
+              'format': self.format_kwarg,
+              'view': self,
+              'favorites': set(Favorite.objects.filter(user_id=self.request.user).values_list('recipe_id', flat=True))
+          }
+
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if not user.is_anonymous:
-            return Favorite.objects.filter(recipe=obj).exists()
-        return False
+        return obj.id in self.context['favorites']
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
@@ -298,6 +309,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.ingredients.clear()
         self.add_tags_ingredients(ingredients, tags, instance)
         return super().update(instance, validated_data)
+
+
 
 
 class RecipeMiniSerializer(serializers.ModelSerializer):
