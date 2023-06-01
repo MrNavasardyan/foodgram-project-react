@@ -165,6 +165,14 @@ class AddIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount')
 
 
+class IngredientSerializer(serializers.ModelSerializer):
+    """Сериалайзер модели Ingredient."""
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit')
+        read_only_fields = '__all__',
+
+
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
@@ -290,10 +298,3 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.ingredients.clear()
         self.add_tags_ingredients(ingredients, tags, instance)
         return super().update(instance, validated_data)
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = '__all__'
-
