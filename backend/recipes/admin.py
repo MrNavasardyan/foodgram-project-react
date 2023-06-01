@@ -56,7 +56,7 @@ class IngredientAdmin(admin.ModelAdmin):
     '''
     Админка ингридиентов.
     '''
-    list_display = ('name', 'measurement')
+    list_display = ('name', 'measurement_unit')
     list_filter = ('name',)
     search_fields = ('name',)
 
