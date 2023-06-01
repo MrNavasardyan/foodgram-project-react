@@ -15,6 +15,23 @@ from rest_framework import status
 
 
 class CustomUserCreateSerializer(UserSerializer):
+
+    email = serializers.EmailField(
+        max_length=254, allow_blank=False, validators=[validate_email]
+    )
+    username = serializers.CharField(
+        max_length=150,
+        allow_blank=False,
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+-]+\Z', message='Введите корректный username'
+            ),
+            UniqueValidator(queryset=User.objects.all()),
+        ],
+    )
+    first_name = serializers.CharField(max_length=150, required=True)
+    last_name = serializers.CharField(max_length=150, required=True)
+    password = serializers.CharField(max_length=150, required=True)
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -32,29 +49,10 @@ class CustomUserCreateSerializer(UserSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
-    # email = serializers.EmailField(
-    #     max_length=254, allow_blank=False, validators=[validate_email]
-    # )
-    # username = serializers.CharField(
-    #     max_length=150,
-    #     allow_blank=False,
-    #     validators=[
-    #         RegexValidator(
-    #             regex=r'^[\w.@+-]+\Z', message='Введите корректный username'
-    #         ),
-    #         UniqueValidator(queryset=User.objects.all()),
-    #     ],
-    # )
-    # first_name = serializers.CharField(max_length=150, required=True)
-    # last_name = serializers.CharField(max_length=150, required=True)
-    # password = serializers.CharField(max_length=150, required=True)
 
-    # class Meta:
-    #     model = User
-    #     fields = ('email', 'username', 'first_name', 'last_name', 'password')
 
-    # def create(self, validated_data):
-    #     return User.objects.create_user(**validated_data)
+
+
 
 
 class CustomTokenCreateSerializer(TokenCreateSerializer):
@@ -141,14 +139,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'coocking_time')
 
 
-class TagSerializer(serializers.ModelSerializer):
-    '''Serializer для модели Tag.'''
-    class Meta:
-        model = Tag
-        fields = ('id', 'name', 'color', 'slug')
-        read_only_fields = '__all__',
-
-
 class ShoppingCartSerializer(serializers.ModelSerializer):
     '''Serializer модели Cart.'''
     name = serializers.ReadOnlyField(
@@ -180,6 +170,13 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientRecipe
         fields = ('id', 'amount')
+
+class TagSerializer(serializers.ModelSerializer):
+    """Serializer для модели Tag."""
+    class Meta:
+        model = Tag
+        fields = ('id', 'name', 'color', 'slug')
+        read_only_fields = '__all__',
 
 
 class IngredientSerializer(serializers.ModelSerializer):
