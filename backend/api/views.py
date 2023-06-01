@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
-from recipes.models import Recipe, Ingridient, Favorite, Follow, ShoppingCart, Tag
+from recipes.models import Recipe, Ingredient, Favorite, Follow, ShoppingCart, Tag
 from api.serializers import RecipeCreateSerializer, RecipeReadSerializer, IngredientSerializer, TagSerializer, FavoriteSerializer, ShoppingCartSerializer
 from .permissions import IsCurrentUserOrAdminOrGuest, IsOwnerOrAdminOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
@@ -111,7 +111,7 @@ class IngredientViewSet(mixins.ListModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
     '''Вьюсет для ингредиентов.'''
-    queryset = Ingridient.objects.all()
+    queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny, )
     filter_backends = (IngredientSearchFilter, )

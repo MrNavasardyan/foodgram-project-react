@@ -32,7 +32,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Ingridient(models.Model):
+class Ingredient(models.Model):
     '''Модель ингридентов'''
     name = models.CharField(
         verbose_name='Название ингредиента',
@@ -40,7 +40,7 @@ class Ingridient(models.Model):
         db_index=True,
         help_text='Введите название ингредиента')
 
-    measurement = models.CharField(
+    measurement_unit = models.CharField(
         verbose_name='Единица измерения',
         max_length=200,
         help_text='Введите единицу измерения')
@@ -78,8 +78,8 @@ class Recipe(models.Model):
         upload_to='media/',
         help_text='Добавьте изображение рецепта')
 
-    ingridients = models.ManyToManyField(
-        Ingridient,
+    Ingredients = models.ManyToManyField(
+        Ingredient,
         through='IngredientRecipe',
         verbose_name='Ингредиент')
 
@@ -116,7 +116,7 @@ class IngredientRecipe(models.Model):
         on_delete=models.CASCADE,
         help_text='Выберите рецепт')
     ingredient = models.ForeignKey(
-        Ingridient,
+        Ingredient,
         verbose_name='Ингредиент',
         on_delete=models.CASCADE,
         help_text='Укажите ингредиенты')

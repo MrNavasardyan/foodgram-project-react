@@ -168,15 +168,15 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
-        source='ingredient.id')
+        source='ingridient.id')
     name = serializers.ReadOnlyField(
-        source='ingredient.name')
-    measurement = serializers.ReadOnlyField(
-        source='ingredient.measurement')
+        source='ingridient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingridient.measurement_unit')
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'name', 'measurement', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -192,14 +192,14 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         read_only=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
-        source='recipe_ingredients',
+        source='recipe_ingridients',
         read_only=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients',
+        fields = ('id', 'tags', 'author', 'ingridients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
 
@@ -218,7 +218,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Recipe'''
-    ingredients = AddIngredientSerializer(
+    measurement_units = AddIngredientSerializer(
         many=True,
         write_only=True)
     tags = serializers.PrimaryKeyRelatedField(
@@ -230,7 +230,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('ingredients', 'tags', 'image',
+        fields = ('ingridients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
 
     def validate_ingredients(self, value):
