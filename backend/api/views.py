@@ -25,6 +25,9 @@ from users.models import User
 from .serializers import FollowSerializer, UserSerializer
 from api.permissions import IsCurrentUserOrAdminOrGuest
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):
