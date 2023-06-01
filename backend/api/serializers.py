@@ -1,6 +1,6 @@
 from django.core.validators import RegexValidator
 from rest_framework.validators import UniqueValidator
-from recipes.models import Recipe, Ingridient, Tag, IngredientRecipe, ShoppingCart, Favorite, Follow
+from recipes.models import Recipe, Ingredient, Tag, IngredientRecipe, ShoppingCart, Favorite, Follow
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
