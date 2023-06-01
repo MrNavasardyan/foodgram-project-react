@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from users.models import User
 from .tags_color import TagsColor
-
+from django.db.models import F, Q
 
 class Tag(models.Model):
     '''Модель тегов.'''
