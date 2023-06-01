@@ -218,7 +218,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Recipe'''
-    measurement_units = AddIngredientSerializer(
+    ingredients = AddIngredientSerializer(
         many=True,
         write_only=True)
     tags = serializers.PrimaryKeyRelatedField(
@@ -230,7 +230,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('Ingredients', 'measurement_units', 'tags', 'image',
+        fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
 
     def validate_ingredients(self, value):
