@@ -157,7 +157,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     Serializer для поля ingredient модели Recipe - создание ингредиентов.
     '''
     id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingridient.objects.all())
+        queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
 
     class Meta:
@@ -168,11 +168,11 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
-        source='ingridient.id')
+        source='Ingredient.id')
     name = serializers.ReadOnlyField(
-        source='ingridient.name')
+        source='Ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source='ingridient.measurement_unit')
+        source='Ingredient.measurement_unit')
 
     class Meta:
         model = IngredientRecipe
@@ -192,14 +192,14 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         read_only=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
-        source='recipe_ingridients',
+        source='recipe_Ingredients',
         read_only=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingridients',
+        fields = ('id', 'tags', 'author', 'Ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
 
@@ -230,7 +230,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('ingridients', 'tags', 'image',
+        fields = ('Ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
 
     def validate_ingredients(self, value):
@@ -240,7 +240,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 {'ingredients': 'Нужно выбрать ингредиент!'})
             ingredients_list = []
             for item in ingredients:
-                ingredient = get_object_or_404(Ingridient, name=item['id'])
+                ingredient = get_object_or_404(Ingredient, name=item['id'])
                 if ingredient in ingredients_list:
                     raise ValidationError(
                         {'ingredients': 'Ингридиенты повторяются!'})
@@ -294,6 +294,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ingridient
+        model = Ingredient
         fields = '__all__'
 
