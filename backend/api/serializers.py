@@ -113,7 +113,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         source='recipe.image',
         read_only=True)
     coocking_time = serializers.IntegerField(
-        source='recipe.cooking_time',
+        source='recipe.cook_time',
         read_only=True)
     id = serializers.PrimaryKeyRelatedField(
         source='recipe',
@@ -141,7 +141,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         source='recipe.image',
         read_only=True)
     coocking_time = serializers.IntegerField(
-        source='recipe.cooking_time',
+        source='recipe.cook_time',
         read_only=True)
     id = serializers.PrimaryKeyRelatedField(
         source='recipe',
@@ -201,7 +201,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
-                  'name', 'image', 'text', 'cooking_time')
+                  'name', 'image', 'text', 'cook_time')
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
@@ -231,7 +231,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
-                  'name', 'text', 'cooking_time', 'author')
+                  'name', 'text', 'cook_time', 'author')
 
 
     def validate_ingredients(self, value):
@@ -241,7 +241,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 {'ingredients': 'Нужно выбрать ингредиент!'})
             ingredients_list = []
             for item in ingredients:
-                ingredient = get_object_or_404(Ingredient, name=item['id'])
+                ingredient = get_object_or_404(Ingridient, name=item['id'])
                 if ingredient in ingredients_list:
                     raise ValidationError(
                         {'ingredients': 'Ингридиенты повторяются!'})
