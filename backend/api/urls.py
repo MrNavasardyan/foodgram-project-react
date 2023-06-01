@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register('recipes', RecipeViewSet)
 router.register('tags', TagViewSet)
 router.register('ingredients', IngredientViewSet)
-router.register('users', UserViewSet)
+router.register('user', UserViewSet)
 
 
 urlpatterns = [
@@ -18,7 +18,7 @@ urlpatterns = [
     re_path(r'auth/', include('djoser.urls.authtoken'))
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+# if settings.DEBUG:
+#     urlpatterns += static(
+#         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+#     )
