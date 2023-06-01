@@ -24,6 +24,7 @@ from recipes.models import Follow
 from users.models import User
 from .serializers import FollowSerializer, UserSerializer
 from api.permissions import IsCurrentUserOrAdminOrGuest
+from rest_framework.pagination import PageNumberPagination
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -121,9 +122,10 @@ class IngredientViewSet(mixins.ListModelMixin,
 class RecipeViewSet(viewsets.ModelViewSet):
     '''Вьюсет модели Recipe: [GET, POST, DELETE, PATCH].'''
     queryset = Recipe.objects.all()
-    permission_classes = (AllowAny, )
-    # pagination_class = CustomPagintaion
-    filter_backends = (DjangoFilterBackend, )
+    permission_classes = (IsOwnerOrAdminOrReadOnly, )
+    pagination_class = PageNumberPagination
+    pagination_class.page_size = 6
+    filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
