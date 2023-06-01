@@ -64,6 +64,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True,
             methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
+
     def subscribe(self, request, *args, **kwargs):
         """Создание и удаление подписки."""
         author = get_object_or_404(User, id=self.kwargs.get('pk'))
