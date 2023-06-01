@@ -4,6 +4,7 @@ from .views import RecipeViewSet, TagViewSet, IngredientViewSet, UserViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'api'
 
 router = DefaultRouter()
 router.register('users', UserViewSet)
