@@ -5,7 +5,7 @@ services:
     image: postgres:13.0-alpine
     # volume и связанная с ним директория в контейнере
     volumes:
-      - data:/var/lib/postgresql/data/
+      - db:/var/lib/postgresql/data/
     # адрес файла, где хранятся переменные окружения
     env_file:
       - ./.env
@@ -42,5 +42,5 @@ services:
 volumes:
   static_value:
   media_value:
-  data:
+  db:
   redoc:
