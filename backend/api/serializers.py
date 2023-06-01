@@ -168,11 +168,11 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     '''Serializer для связаной модели Recipe и Ingredient.'''
     id = serializers.ReadOnlyField(
-        source='ingredient.id')
+        source='ingridient.id')
     name = serializers.ReadOnlyField(
-        source='ingredient.name')
+        source='ingridient.name')
     measurement = serializers.ReadOnlyField(
-        source='ingredient.measurement')
+        source='ingridient.measurement')
 
     class Meta:
         model = IngredientRecipe
