@@ -10,6 +10,8 @@ from django.core.validators import RegexValidator
 from rest_framework.validators import UniqueValidator
 from djoser.serializers import UserSerializer, TokenCreateSerializer
 from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 
 class CustomUserCreateSerializer(UserSerializer):
@@ -230,6 +232,65 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
+
+
+    def validate_ingredients(self, value):
+            ingredients = value
+            if not ingredients:
+                raise ValidationError(
+                {'ingredients': 'Нужно выбрать ингредиент!'})
+            ingredients_list = []
+            for item in ingredients:
+                ingredient = get_object_or_404(Ingredient, name=item['id'])
+                if ingredient in ingredients_list:
+                    raise ValidationError(
+                        {'ingredients': 'Ингридиенты повторяются!'})
+                if int(item['amount']) <= 0:
+                    raise ValidationError(
+                    {'amount': 'Количество должно быть больше 0!'})
+                    ingredients_list.append(ingredient)
+                    return value
+
+    def validate_tags(self, value):
+        tags = value
+        if not tags:
+            raise ValidationError(
+                {'tags': 'Нужно выбрать тег!'})
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                raise ValidationError(
+                    {'tags': 'Теги повторяются!'})
+            tags_list.append(tag)
+        return value
+
+    def to_representation(self, instance):
+        ingredients = super().to_representation(instance)
+        ingredients['ingredients'] = IngredientRecipeSerializer(
+            instance.recipe_ingredients.all(), many=True).data
+        return ingredients
+
+    def add_tags_ingredients(self, ingredients, tags, model):
+        for ingredient in ingredients:
+            IngredientRecipe.objects.update_or_create(
+                recipe=model,
+                ingredient=ingredient['id'],
+                amount=ingredient['amount'])
+        model.tags.set(tags)
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = super().create(validated_data)
+        self.add_tags_ingredients(ingredients, tags, recipe)
+        return recipe
+
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        instance.ingredients.clear()
+        self.add_tags_ingredients(ingredients, tags, instance)
+        return super().update(instance, validated_data)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
