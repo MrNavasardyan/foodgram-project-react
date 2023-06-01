@@ -275,7 +275,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 recipe=model,
                 ingredient=ingredient['id'],
                 amount=ingredient['amount'])
-        model.tags.set(tags)
+            model.tags.set(tags)
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
