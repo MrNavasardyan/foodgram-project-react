@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from recipes.models import Recipe, Ingredient, Favorite, Follow, ShoppingCart, Tag
-from api.serializers import RecipeCreateSerializer, RecipeReadSerializer, IngredientSerializer, TagSerializer, FavoriteSerializer, ShoppingCartSerializer
+from api.serializers import RecipeCreateSerializer, RecipeReadSerializer, IngredientSerializer, TagSerializer, FavoriteSerializer, ShoppingCartSerializer, FavoriteGetSerializer
 from .permissions import IsCurrentUserOrAdminOrGuest, IsOwnerOrAdminOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from django.shortcuts import get_object_or_404
@@ -133,12 +133,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
     def get_serializer_context(self):
-
         return {
               'request': self.request,
               'format': self.format_kwarg,
               'view': self,
-              'favorites': set(Favorite.objects.filter(user_id=self.request.user).values_list('recipe_id', flat=True)),
+              'favorites': set(Favorite.objects.filter(author_id=self.request.user).values_list('recipe_id', flat=True)),
           }
 
     def get_serializer_class(self):
@@ -149,32 +148,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=True,
             methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
-    def favorite(self, request, *args, **kwargs):
+    def favorite(self, request, pk):
         '''
         Получить / Добавить / Удалить  рецепт
         из избранного у текущего пользоватля.
         '''
-        recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
-        user = self.request.user
-        if request.method == 'POST':
-            if Favorite.objects.filter(author=user,
-                                       recipe=recipe).exists():
-                return Response({'errors': 'Рецепт уже добавлен!'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            serializer = FavoriteSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(author=user, recipe=recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        if not Favorite.objects.filter(author=user,
-                                       recipe=recipe).exists():
-            return Response({'errors': 'Объект не найден'},
-                            status=status.HTTP_404_NOT_FOUND)
-        Favorite.objects.get(recipe=recipe).delete()
-        return Response('Рецепт успешно удалён из избранного.',
-                        status=status.HTTP_204_NO_CONTENT)
+
+        return self.favorite_shopping_list(
+            Favorite, pk, request, FavoriteSerializer, FavoriteGetSerializer)
+        # recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
+        # user = self.request.user
+        # if request.method == 'POST':
+        #     if Favorite.objects.filter(author=user,
+        #                                recipe=recipe).exists():
+        #         return Response({'errors': 'Рецепт уже добавлен!'},
+        #                         status=status.HTTP_400_BAD_REQUEST)
+        #     serializer = FavoriteSerializer(data=request.data)
+        #     if serializer.is_valid(raise_exception=True):
+        #         serializer.save(author=user, recipe=recipe)
+        #         return Response(serializer.data,
+        #                         status=status.HTTP_201_CREATED)
+        #     return Response(serializer.errors,
+        #                     status=status.HTTP_400_BAD_REQUEST)
+        # if not Favorite.objects.filter(author=user,
+        #                                recipe=recipe).exists():
+        #     return Response({'errors': 'Объект не найден'},
+        #                     status=status.HTTP_404_NOT_FOUND)
+        # Favorite.objects.get(recipe=recipe).delete()
+        # return Response('Рецепт успешно удалён из избранного.',
+        #                 status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True,
             methods=['post', 'delete'],
