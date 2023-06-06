@@ -12,7 +12,6 @@ from djoser.serializers import UserSerializer, TokenCreateSerializer
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.response import Response
 
 
 class CustomUserCreateSerializer(UserSerializer):
@@ -135,6 +134,12 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('id', 'name', 'image', 'coocking_time')
 
+    def create(self, validated_data):
+        user = self.context['request'].user
+        recipe = validated_data['recipe']
+        if Favorite.objects.filter(author=user, recipe=recipe).exists():
+            raise serializers.ValidationError("Рецепт уже добавлен!")
+        return Favorite.objects.create(author=user, recipe=recipe)
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     '''Serializer модели Cart.'''
@@ -229,6 +234,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, obj):
         return obj.id in self.context['shopping_cart']
 
+
 class RecipeCreateSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Recipe'''
     ingredients = AddIngredientSerializer(
@@ -246,13 +252,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
 
-    def validate_favorite(self, value):
-        recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
-        user = self.request.user
-        if Favorite.objects.filter(author=user,
-                                       recipe=recipe).exists():
-                return Response({'errors': 'Рецепт уже добавлен!'},
-                                status=status.HTTP_400_BAD_REQUEST)
 
     def validate_ingredients(self, value):
             ingredients = value

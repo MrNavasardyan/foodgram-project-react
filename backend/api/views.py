@@ -158,12 +158,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
         user = self.request.user
         if request.method == 'POST':
-            # if Favorite.objects.filter(author=user,
-            #                            recipe=recipe).exists():
-            #     return Response({'errors': 'Рецепт уже добавлен!'},
-            #                     status=status.HTTP_400_BAD_REQUEST)
             serializer = FavoriteSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 serializer.save(author=user, recipe=recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
