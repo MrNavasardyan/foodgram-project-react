@@ -7,13 +7,13 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 CSRF_TRUSTED_ORIGINS = [
-	'http://*', 
-	'https://*', 
-	'http://localhost:8000', 
-	'https://localhost:8000', 
+	'http://*',
+	'https://*',
+	'http://localhost:8000',
+	'https://localhost:8000',
 	'http://localhost:8000',
 	'http://localhost:8080',
-	'http://backend:8000' 
+	'http://backend:8000'
 	]
 
 # Quick-start development settings - unsuitable for production
