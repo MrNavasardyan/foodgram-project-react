@@ -4,6 +4,7 @@ from users.models import User
 from .tags_color import TagsColor
 from django.db.models import F, Q
 
+
 class Tag(models.Model):
     '''Модель тегов.'''
 
@@ -78,7 +79,7 @@ class Recipe(models.Model):
         upload_to='media/',
         help_text='Добавьте изображение рецепта')
 
-    Ingredients = models.ManyToManyField(
+    ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
         verbose_name='Ингредиент')
