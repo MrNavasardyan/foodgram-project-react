@@ -155,16 +155,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = RecipeMiniSerializer(recipe, data=request.data,
                                           context={"request": request})
             serializer.is_valid(raise_exception=True)
-            if not Favorite.objects.filter(user=request.user,
+            if not Favorite.objects.filter(author=request.user,
                                            recipe=recipe).exists():
-                Favorite.objects.create(user=request.user, recipe=recipe)
+                Favorite.objects.create(author=request.user, recipe=recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
             return Response({'errors': 'Рецепт уже в избранном.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == 'DELETE':
-            get_object_or_404(Favorite, user=request.user,
+            get_object_or_404(Favorite, author=request.user,
                               recipe=recipe).delete()
             return Response({'detail': 'Рецепт успешно удален из избранного.'},
                             status=status.HTTP_204_NO_CONTENT)
