@@ -48,11 +48,7 @@ class CustomUserCreateSerializer(UserSerializer):
         return False
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
-
-
-
+        return User.objects.create(**validated_data)
 
 
 class CustomTokenCreateSerializer(TokenCreateSerializer):
