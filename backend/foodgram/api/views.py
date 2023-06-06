@@ -1,11 +1,8 @@
-import os
+from django.db.models import Sum
 from rest_framework.status import HTTP_400_BAD_REQUEST
-# from django.db.models import Sum
 from django.http.response import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from reportlab.pdfbase import pdfmetrics, ttfonts
-from reportlab.pdfgen import canvas
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -222,17 +219,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.delete_favorite_or_shopping_cart(ShoppingCart, user, recipe)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False,
-            methods=['get'],
-            permission_classes=[IsAuthenticated])
-    def download_shopping_cart(self, request):
-        """
-        Скачать список покупок для выбранных рецептов,
-        данные суммируются.
-        """
-        user = CustomUser.objects.get(id=self.request.user.pk)
-        print(user)
-        if user.shopping_cart.exists():
-            return shopping_cart(self, request, user)
-        return Response('Список покупок пуст.',
-                        status=status.HTTP_404_NOT_FOUND)
+    @action(detail=False, methods=['get'],
+            permission_classes=(IsAuthenticated,))
+    def download_shopping_cart(self, request, **kwargs):
+        ingredients = (
+            RecipeIngredient.objects
+            .filter(recipe__shopping_recipe__user=request.user)
+            .values('ingredient')
+            .annotate(total_amount=Sum('amount'))
+            .values_list('ingredient__name', 'total_amount',
+                         'ingredient__measurement_unit')
+        )
+        file_list = []
+        [file_list.append(
+            '{} - {} {}.'.format(*ingredient)) for ingredient in ingredients]
+        file = HttpResponse('Cписок покупок:\n' + '\n'.join(file_list),
+                            content_type='text/plain')
+        file['Content-Disposition'] = (f'attachment; filename={dt.now()}')
+        return file
