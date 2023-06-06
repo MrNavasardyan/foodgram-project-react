@@ -134,12 +134,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('id', 'name', 'image', 'coocking_time')
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        recipe = validated_data['recipe']
-        if Favorite.objects.filter(author=user, recipe=recipe).exists():
-            raise serializers.ValidationError("Рецепт уже добавлен!")
-        return Favorite.objects.create(author=user, recipe=recipe)
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     '''Serializer модели Cart.'''
@@ -269,6 +264,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     {'amount': 'Количество должно быть больше 0!'})
                 ingredients_list.append(ingredient)
             return value
+
+    def validate_recipe(self, validated_data):
+        user = self.context['request'].user
+        recipe = validated_data['recipe']
+        if Favorite.objects.filter(author=user, recipe=recipe).exists():
+            raise serializers.ValidationError("Рецепт уже добавлен!")
+        return Favorite.objects.create(author=user, recipe=recipe)
 
     def validate_tags(self, value):
         tags = value
