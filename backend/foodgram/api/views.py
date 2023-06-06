@@ -234,27 +234,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, **kwargs):
-        recipe = get_object_or_404(Recipe, id=kwargs['pk'])
-
+        """
+        Получить / Добавить / Удалить  рецепт
+        из списка покупок у текущего пользоватля.
+        """
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
+        user = self.request.user
         if request.method == 'POST':
-            serializer = RecipeListSerializer(recipe, data=request.data,
-                                          context={"request": request})
-            serializer.is_valid(raise_exception=True)
-            if not ShoppingCart.objects.filter(user=request.user,
-                                                recipe=recipe).exists():
-                ShoppingCart.objects.create(user=request.user, recipe=recipe)
+            if ShoppingCart.objects.filter(author=user,
+                                           recipe=recipe).exists():
+                return Response({'errors': 'Рецепт уже добавлен!'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            serializer = CartSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(author=user, recipe=recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
-            return Response({'errors': 'Рецепт уже в списке покупок.'},
+            return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+        if not ShoppingCart.objects.filter(author=user,
+                                           recipe=recipe).exists():
+            return Response({'errors': 'Объект не найден'},
+                            status=status.HTTP_404_NOT_FOUND)
+        ShoppingCart.objects.get(recipe=recipe).delete()
+        return Response('Рецепт успешно удалён из списка покупок.',
+                        status=status.HTTP_204_NO_CONTENT)
 
-        if request.method == 'DELETE':
-            get_object_or_404(ShoppingCart, user=request.user,
-                              recipe=recipe).delete()
-            return Response(
-                {'detail': 'Рецепт успешно удален из списка покупок.'},
-                status=status.HTTP_204_NO_CONTENT
-            )
     # def shopping_cart(self, request, pk=None):
     #     user = request.user
     #     recipe = get_object_or_404(Recipe, pk=pk)
