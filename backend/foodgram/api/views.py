@@ -15,6 +15,8 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
+from users.models import CustomUser
+from .utils import shopping_cart
 
 from recipes.models import (
     ShoppingCart,
@@ -224,53 +226,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def download_shopping_cart(self, request):
-        user = request.user
-        ingredients = (
-            RecipeIngredient.objects.filter(recipe__shoppingcart__user=user)
-            .values(
-                'ingredient__name',
-                'ingredient__measurement_unit',
-            )
-            .annotate(ingredient_sum=Sum('amount'))
-            .values_list(
-                'ingredient__name',
-                'ingredient_sum',
-                'ingredient__measurement_unit',
-            )
-        )
-        response_list = {}
-        for item in ingredients:
-            name = item[0]
-            if name not in response_list:
-                response_list[name] = {
-                    'amount': item[1],
-                    'measurement_unit': item[2],
-                }
-            else:
-                response_list[name]['amount'] += item[2]
-        pdfmetrics.registerFont(
-            ttfonts.TTFont(
-                'AGHelveticaCyr',
-                os.path.join(settings.BASE_DIR, 'fonts', 'AGHelveticaCyr.ttf'),
-                'UTF-8',
-            )
-        )
-        response = HttpResponse(content_type='application/pdf')
-        shopping_cart_list = canvas.Canvas(response)
-        shopping_cart_list.setFont('AGHelveticaCyr', size=24)
-        shopping_cart_list.drawString(200, 770, 'Cписок покупок')
-        shopping_cart_list.setFont('AGHelveticaCyr', size=14)
-        height = 700
-        for list_number, (name, data) in enumerate(response_list.items(), 1):
-            shopping_cart_list.drawString(
-                80,
-                height,
-                (
-                    f'{list_number}. {name} - {data["amount"]} '
-                    f'{data["measurement_unit"]}'
-                ),
-            )
-            height -= 20
-        shopping_cart_list.showPage()
-        shopping_cart_list.save()
-        return response
+        """
+        Скачать список покупок для выбранных рецептов,
+        данные суммируются.
+        """
+        author = CustomUser.objects.get(id=self.request.user.pk)
+        if author.shopping_cart.exists():
+            return shopping_cart(self, request, author)
+        return Response('Список покупок пуст.',
+                        status=status.HTTP_404_NOT_FOUND)
