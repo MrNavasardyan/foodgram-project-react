@@ -12,6 +12,7 @@ from djoser.serializers import UserSerializer, TokenCreateSerializer
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.response import Response
 
 
 class CustomUserCreateSerializer(UserSerializer):
@@ -226,10 +227,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
     def get_is_in_shopping_cart(self, obj):
-        # user = self.context.get('request').user
-        # if not user.is_anonymous:
-        #     return ShoppingCart.objects.filter(recipe=obj).exists()
-        # return False
         return obj.id in self.context['shopping_cart']
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -248,6 +245,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
+
+    def validate_favorite(self, value):
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
+        user = self.request.user
+        if Favorite.objects.filter(author=user,
+                                       recipe=recipe).exists():
+                return Response({'errors': 'Рецепт уже добавлен!'},
+                                status=status.HTTP_400_BAD_REQUEST)
 
     def validate_ingredients(self, value):
             ingredients = value
