@@ -156,6 +156,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return self.favorite_shopping_list(
             Favorite, pk, request, FavoriteSerializer, FavoriteGetSerializer)
+
+    def favorite_shopping_list(
+            self,
+            model,
+            pk,
+            request,
+            InputSerializer,
+            OutputSerializer):
+        recipe = get_object_or_404(Recipe, id=pk)
+        data = {'user': request.user.id, 'recipe': pk}
+
+        if request.method == 'POST':
+            # Add to user's favorite list
+            serializer = InputSerializer(
+                data=data, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            serializer = OutputSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            # Delete a recipe from a user's Favorite list
+            serializer = InputSerializer(data=data, context={
+                'request': request})
+            serializer.is_valid(raise_exception=True)
+
+            model.objects.filter(
+                user=serializer.data.get('user'),
+                recipe=serializer.data.get('recipe')).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         # recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
         # user = self.request.user
         # if request.method == 'POST':
