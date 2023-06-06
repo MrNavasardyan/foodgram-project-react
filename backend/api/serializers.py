@@ -226,7 +226,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
     def get_is_in_shopping_cart(self, obj):
-        return obj.id in self.context['shopping_cart']
+        user = self.context.get('request').user
+        if not user.is_anonymous:
+            return ShoppingCart.objects.filter(recipe=obj).exists()
+        return False
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -245,8 +248,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('ingredients', 'tags', 'image',
                   'name', 'text', 'cooking_time', 'author')
-
-
 
     def validate_ingredients(self, value):
             ingredients = value
