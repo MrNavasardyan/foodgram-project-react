@@ -271,7 +271,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
 
-    def get_is_favorite(self, obj):
+    def get_is_favorited(self, obj):
         return (
             self.context.get('request').user.is_authenticated
             and Favorite.objects.filter(user=self.context['request'].user,
