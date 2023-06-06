@@ -139,7 +139,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
               'format': self.format_kwarg,
               'view': self,
               'favorites': set(Favorite.objects.filter(author_id=self.request.user).values_list('recipe_id', flat=True)),
-              'shooping_card': set(ShoppingCart.objects.filter(recipe=self.request.recipe).values_list('recipe_id', flat=True))
+              'shooping_cart': set(ShoppingCart.objects.filter(recipe=self.request.recipe_id).values_list('recipe', flat=True))
           }
 
     def get_serializer_class(self):
