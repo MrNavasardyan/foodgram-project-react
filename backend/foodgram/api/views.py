@@ -231,6 +231,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         данные суммируются.
         """
         user = CustomUser.objects.get(id=self.request.user.pk)
+        print(user)
         if user.shopping_cart.exists():
             return shopping_cart(self, request, user)
         return Response('Список покупок пуст.',
