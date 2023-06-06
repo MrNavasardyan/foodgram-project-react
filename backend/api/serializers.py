@@ -182,11 +182,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('id', 'name', 'image', 'coocking_time')
 
-class FavoriteGetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = ['id', 'name', 'image', 'cooking_time']
-        read_only_fields = ['id', 'name', 'image', 'cooking_time']
+
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
@@ -368,14 +364,3 @@ class RecipeMiniSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'cooking_time', 'image',)
 
-
-class RecipeSerializer(serializers.ModelSerializer):
-    """Список рецептов без ингридиентов."""
-    image = Base64ImageField(read_only=True)
-    name = serializers.ReadOnlyField()
-    cooking_time = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name',
-                  'image', 'cooking_time')
