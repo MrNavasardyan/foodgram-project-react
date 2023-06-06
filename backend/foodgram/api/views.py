@@ -1,5 +1,4 @@
 from django.db.models import Sum
-from rest_framework.status import HTTP_400_BAD_REQUEST
 from django.http.response import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -11,7 +10,6 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
-from django.core.handlers.wsgi import WSGIRequest
 from rest_framework.response import Response
 from users.models import CustomUser
 from datetime import datetime as dt
@@ -24,7 +22,7 @@ from recipes.models import (
     RecipeIngredient,
     Tag,
 )
-from .utils import shopping_cart
+
 from users.models import CustomUser, Follow
 
 from .filters import IngredientLookupFilter, RecipeFilter
@@ -71,6 +69,14 @@ class CustomUserViewSet(UserViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @action(detail=False, methods=['get'],
+            pagination_class=None,
+            permission_classes=(IsAuthenticated,))
+    def me(self, request):
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data,
+                        status=status.HTTP_200_OK)
+
     @action(
         methods=('GET',),
         detail=False,
@@ -78,14 +84,19 @@ class CustomUserViewSet(UserViewSet):
         url_path='subscriptions',
     )
     def subscriptions(self, request):
-        user = request.user
-        queryset = Follow.objects.filter(user=user)
-        pages = self.paginate_queryset(queryset)
-        serializer = FollowSerializer(
-            pages,
-            many=True,
-            context={'request': request},
-        )
+        queryset = CustomUser.objects.filter(subscribing__user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = FollowSerializer(page, many=True,
+                                             context={'request': request})
+    # def subscriptions(self, request):
+    #     user = request.user
+    #     queryset = Follow.objects.filter(user=user)
+    #     pages = self.paginate_queryset(queryset)
+    #     serializer = FollowSerializer(
+    #         pages,
+    #         many=True,
+    #         context={'request': request},
+    #     )
         return self.get_paginated_response(serializer.data)
 
     @action(
@@ -101,7 +112,7 @@ class CustomUserViewSet(UserViewSet):
                 return Response(
                     {
                         'subscribe': (
-                            'Нельзя просто так взять и подписаться на себя.'
+                            'Нельзя подписаться на самого себя.'
                         )
                     },
                     status=status.HTTP_400_BAD_REQUEST,
@@ -183,6 +194,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         filter_backends=DjangoFilterBackend,
         filterset_class=RecipeFilter,
+        permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, pk):
         user = request.user
