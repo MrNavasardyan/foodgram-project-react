@@ -5,7 +5,7 @@ from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.validators import validate_email
-from users.models import User, Follow
+from users.models import User
 from django.core.validators import RegexValidator
 from rest_framework.validators import UniqueValidator
 from djoser.serializers import UserSerializer, TokenCreateSerializer
