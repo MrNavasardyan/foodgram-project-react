@@ -230,8 +230,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         Скачать список покупок для выбранных рецептов,
         данные суммируются.
         """
-        author = CustomUser.objects.get(id=self.request.user.pk)
-        if author.exists():
-            return shopping_cart(self, request, author)
+        user = CustomUser.objects.get(id=self.request.user.pk)
+        if user.shopping_cart.exists():
+            return shopping_cart(self, request, user)
         return Response('Список покупок пуст.',
                         status=status.HTTP_404_NOT_FOUND)
