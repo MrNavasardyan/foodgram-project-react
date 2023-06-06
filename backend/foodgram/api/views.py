@@ -156,25 +156,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-    @staticmethod
-    def post_favorite_or_shopping_cart(model, user, recipe):
-        model_create, create = model.objects.get_or_create(
-            user=user, recipe=recipe
-        )
-        if create:
-            if str(model) == 'Favorite':
-                serializer = FavoriteSerializer()
-            else:
-                serializer = CartSerializer()
-            return Response(
-                serializer.to_representation(instance=model_create),
-                status=status.HTTP_201_CREATED,
-            )
-
-    @staticmethod
-    def delete_favorite_or_shopping_cart(model, user, recipe):
-        model.objects.filter(user=user, recipe=recipe).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
@@ -204,36 +185,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Рецепт успешно удален из избранного.'},
                             status=status.HTTP_204_NO_CONTENT)
 
-
-    # @action(
-    #     methods=('POST', 'DELETE'),
-    #     detail=True,
-    #     filter_backends=DjangoFilterBackend,
-    #     filterset_class=RecipeFilter,
-    #     permission_classes=(IsAuthenticated,)
-    # )
-    # def favorite(self, request, pk):
-    #     user = request.user
-    #     recipe = get_object_or_404(Recipe, pk=pk)
-    #     if request.method == 'POST':
-    #         if Favorite.objects.filter(user=user, recipe=recipe).exists():
-    #             return Response(
-    #                 {'favorite': 'Рецепт уже добавлен в избранное.'},
-    #                 status=status.HTTP_400_BAD_REQUEST,
-    #             )
-    #         return self.post_favorite_or_shopping_cart(Favorite, user, recipe)
-    #     elif request.method == 'DELETE':
-    #         return self.delete_favorite_or_shopping_cart(
-    #             Favorite, user, recipe
-    #         )
-    #     return Response(status=status.HTTP_400_BAD_REQUEST)
-
     @action(
         methods=('POST', 'DELETE'),
         detail=True,
         permission_classes=(IsAuthenticated,),
     )
-    def shopping_cart(self, request, **kwargs):
+    def shopping_cart(self, request):
         """
         Получить / Добавить / Удалить  рецепт
         из списка покупок у текущего пользоватля.
