@@ -27,7 +27,7 @@ from api.permissions import IsCurrentUserOrAdminOrGuest
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
+# User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -87,8 +87,6 @@ class UserViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_204_NO_CONTENT)
         return Response({'errors': 'Объект не найден'},
                         status=status.HTTP_404_NOT_FOUND)
-
-
 
     @action(detail=False,
             methods=['get'],
