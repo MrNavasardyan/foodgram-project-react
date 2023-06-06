@@ -135,7 +135,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'coocking_time')
 
 
-
 class ShoppingCartSerializer(serializers.ModelSerializer):
     '''Serializer модели Cart.'''
     name = serializers.ReadOnlyField(
@@ -248,6 +247,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                   'name', 'text', 'cooking_time', 'author')
 
 
+
     def validate_ingredients(self, value):
             ingredients = value
             if not ingredients:
@@ -264,7 +264,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     {'amount': 'Количество должно быть больше 0!'})
                 ingredients_list.append(ingredient)
             return value
-
 
     def validate_tags(self, value):
         tags = value
