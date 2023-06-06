@@ -132,13 +132,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
 
-    def get_serializer_context(self):
-        return {
-              'request': self.request,
-              'format': self.format_kwarg,
-              'view': self,
-              'favorites': set(Favorite.objects.filter(author=self.request.author).values_list('recipe_id', flat=True)),
-          }
+    # def get_serializer_context(self):
+    #     return {
+    #           'request': self.request,
+    #           'format': self.format_kwarg,
+    #           'view': self,
+    #           'favorites': set(Favorite.objects.filter(author=self.request.author).values_list('recipe_id', flat=True)),
+    #       }
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
