@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from recipes.models import RecipeIngredient
 
+
 def shopping_cart(self, request, author):
     """Скачивание списка продуктов для выбранных рецептов пользователя."""
     sum_ingredients_in_recipes = RecipeIngredient.objects.filter(

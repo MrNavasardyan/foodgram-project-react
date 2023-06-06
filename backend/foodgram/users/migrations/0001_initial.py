@@ -62,10 +62,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("first_name", models.CharField(max_length=150, verbose_name="Имя")),
-                ("last_name", models.CharField(max_length=150, verbose_name="Фамилия")),
+                ("last_name", models.CharField(
+                    max_length=150, verbose_name="Фамилия")),
                 (
                     "is_superuser",
-                    models.BooleanField(default=False, verbose_name="Администратор"),
+                    models.BooleanField(
+                        default=False, verbose_name="Администратор"),
                 ),
                 (
                     "groups",

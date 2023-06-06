@@ -343,7 +343,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {
                     'recipes': (
-                        'Нельзя просто так взять и подписаться на свой рецепт.'
+                        'Подписываться на свой рецепт запрещено'
                     )
                 }
             )

@@ -222,43 +222,43 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.delete_favorite_or_shopping_cart(ShoppingCart, user, recipe)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=('get',), detail=False)
-    def download_shopping_cart(self, request: WSGIRequest) -> Response:
-        """Загружает файл *.txt со списком покупок.
-        Считает сумму ингредиентов в рецептах выбранных для покупки.
-        Возвращает текстовый файл со списком ингредиентов.
-        Вызов метода через url:  */recipes/download_shopping_cart/.
-        Args:
-            request (WSGIRequest): Объект запроса..
-        Returns:
-            Responce: Ответ с текстовым файлом.
-        """
-        user = self.request.user
-        if not user.carts.exists():
-            return Response(status=HTTP_400_BAD_REQUEST)
+    # @action(methods=('get',), detail=False)
+    # def download_shopping_cart(self, request: WSGIRequest) -> Response:
+    #     """Загружает файл *.txt со списком покупок.
+    #     Считает сумму ингредиентов в рецептах выбранных для покупки.
+    #     Возвращает текстовый файл со списком ингредиентов.
+    #     Вызов метода через url:  */recipes/download_shopping_cart/.
+    #     Args:
+    #         request (WSGIRequest): Объект запроса..
+    #     Returns:
+    #         Responce: Ответ с текстовым файлом.
+    #     """
+    #     user = self.request.user
+    #     if not user.carts.exists():
+    #         return Response(status=HTTP_400_BAD_REQUEST)
 
-        filename = f'{user.username}_shopping_list.txt'
-        shopping_list = [
-            f'Список покупок для:\n\n{user.first_name}\n'
-            f'{dt.now()}\n'
-        ]
+    #     filename = f'{user.username}_shopping_list.txt'
+    #     shopping_list = [
+    #         f'Список покупок для:\n\n{user.first_name}\n'
+    #         f'{dt.now()}\n'
+    #     ]
 
-        ingredients = Ingredient.objects.filter(
-            recipe__recipe__in_carts__user=user
-        ).values(
-            'name',
-            measurement=F('measurement_unit')
-        ).annotate(amount=Sum('recipe__amount'))
+    #     ingredients = Ingredient.objects.filter(
+    #         recipe__recipe__in_carts__user=user
+    #     ).values(
+    #         'name',
+    #         measurement=F('measurement_unit')
+    #     ).annotate(amount=Sum('recipe__amount'))
 
-        for ing in ingredients:
-            shopping_list.append(
-                f'{ing["name"]}: {ing["amount"]} {ing["measurement"]}'
-            )
+    #     for ing in ingredients:
+    #         shopping_list.append(
+    #             f'{ing["name"]}: {ing["amount"]} {ing["measurement"]}'
+    #         )
 
-        shopping_list.append('\nПосчитано в Foodgram')
-        shopping_list = '\n'.join(shopping_list)
-        response = HttpResponse(
-            shopping_list, content_type='text.txt; charset=utf-8'
-        )
-        response['Content-Disposition'] = f'attachment; filename={filename}'
-        return response
+    #     shopping_list.append('\nПосчитано в Foodgram')
+    #     shopping_list = '\n'.join(shopping_list)
+    #     response = HttpResponse(
+    #         shopping_list, content_type='text.txt; charset=utf-8'
+    #     )
+    #     response['Content-Disposition'] = f'attachment; filename={filename}'
+    #     return response
