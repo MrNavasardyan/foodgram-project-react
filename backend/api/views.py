@@ -76,12 +76,12 @@ class UserViewSet(viewsets.ModelViewSet):
                 data=request.data,
                 context={'request': request, 'author': author})
             if serializer.is_valid(raise_exception=True):
-                serializer.save(author=author, user=user)
+                serializer.save(author=author, user_id=user)
                 return Response({'Подписка успешно создана': serializer.data},
                                 status=status.HTTP_201_CREATED)
             return Response({'errors': 'Объект не найден'},
                             status=status.HTTP_404_NOT_FOUND)
-        if Follow.objects.filter(author=author, user=user).exists():
+        if Follow.objects.filter(author=author, user_id=user).exists():
             Follow.objects.get(author=author).delete()
             return Response('Успешная отписка',
                             status=status.HTTP_204_NO_CONTENT)
