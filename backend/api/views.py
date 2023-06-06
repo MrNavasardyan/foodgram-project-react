@@ -159,7 +159,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if request.method == 'POST':
             serializer = FavoriteSerializer(data=request.data)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save(author=user, recipe=recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
