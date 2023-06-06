@@ -27,7 +27,7 @@ from recipes.models import (
     RecipeIngredient,
     Tag,
 )
-from utils import shopping_cart
+from .utils import shopping_cart
 from users.models import CustomUser, Follow
 
 from .filters import IngredientLookupFilter, RecipeFilter
