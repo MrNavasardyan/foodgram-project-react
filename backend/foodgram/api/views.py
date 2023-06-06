@@ -14,6 +14,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
+from django.core.handlers.wsgi import WSGIRequest
 from rest_framework.response import Response
 from users.models import CustomUser
 from .utils import shopping_cart
