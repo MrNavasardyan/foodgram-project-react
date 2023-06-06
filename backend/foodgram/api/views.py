@@ -168,7 +168,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=kwargs['pk'])
 
         if request.method == 'POST':
-            serializer = FavoriteSerializer(recipe, data=request.data,
+            serializer = CustomUserSerializer(recipe, data=request.data,
                                           context={"request": request})
             serializer.is_valid(raise_exception=True)
             if not Favorite.objects.filter(user=request.user,
