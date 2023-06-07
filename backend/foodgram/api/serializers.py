@@ -295,12 +295,10 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
     )
     tags = TagSerializer(read_only=True, many=True)
-    # is_favorite = serializers.SerializerMethodField()
-    # is_cart = serializers.SerializerMethodField()
-    is_favorited = serializers.SerializerMethodField()
+    favorite = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
-    def get_is_favorited(self, obj):
+    def get_favorite(self, obj):
         # user = self.context.get('request').user
         # if user.is_anonymous:
         #     return False
@@ -331,7 +329,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'ingredients',
             'tags',
             'cooking_time',
-            'is_favorited',
+            'favorite',
             'is_in_shopping_cart',
         )
 
