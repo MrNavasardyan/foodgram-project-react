@@ -18,7 +18,7 @@ class RecipeFilter(filters.FilterSet):
         queryset=CustomUser.objects.all())
 
     is_favorited = filters.BooleanFilter(
-        field_name='favorite', method='is_favorited'
+        field_name='is_favorited', method='is_favorited'
     )
 
     is_in_shopping_cart = filters.BooleanFilter(

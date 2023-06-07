@@ -295,10 +295,10 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
     )
     tags = TagSerializer(read_only=True, many=True)
-    favorite = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
-    def get_favorite(self, obj):
+    def get_is_favorited(self, obj):
         # user = self.context.get('request').user
         # if user.is_anonymous:
         #     return False
