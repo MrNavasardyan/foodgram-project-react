@@ -167,7 +167,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,))
     def favorite(self, request, **kwargs):
         user = request.user
-        recipe = get_object_or_404(Recipe, id=kwargs['pk'])
+        recipe = get_object_or_404(Recipe, id=kwargs['id'])
 
         if request.method == 'POST':
             serializer = FavoriteSerializer(recipe, data=request.data,
