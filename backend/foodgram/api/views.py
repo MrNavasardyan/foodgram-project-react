@@ -179,18 +179,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_201_CREATED)
             return Response({'errors': 'Рецепт уже в избранном.'},
                             status=status.HTTP_400_BAD_REQUEST)
-        favorite = Favorite.objects.filter(recipe=recipe)
-        if favorite.exists():
-            favorite.delete()
+        if request.method == 'DELETE':
+            favorite = Favorite.objects.filter(recipe=recipe)
+            if favorite.exists():
+                favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        # return Response(
-        #     {'subscribe': 'Ранее вы уже отписались от этого автора.'},
-        #     status=status.HTTP_400_BAD_REQUEST,
-        # )
-        # if request.method == 'DELETE':
-        #     Favorite.objects.get(recipe=recipe).delete()
-        #     return Response('Рецепт успешно удалён из избранного.',
-        #                 status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=('POST', 'DELETE'),
@@ -216,9 +209,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == 'DELETE':
-            ShoppingCart.objects.get(recipe=recipe).delete()
-            return Response('Рецепт успешно удалён из списка покупок.',
-                        status=status.HTTP_204_NO_CONTENT)
+            cart = ShoppingCart.objects.filter(recipe=recipe)
+            if cart.exists():
+                cart.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # if request.method == 'DELETE':
+        #     ShoppingCart.objects.get(recipe=recipe).delete()
+        #     return Response('Рецепт успешно удалён из списка покупок.',
+        #                 status=status.HTTP_204_NO_CONTENT)
 
 
     @action(detail=False, methods=['GET'],
