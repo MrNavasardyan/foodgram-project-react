@@ -161,8 +161,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             user=user, recipe=recipe
         )
         if create:
-            if str(model) == 'Favorite':
-                serializer = FavoriteSerializer()
+            serializer = FavoriteSerializer()
             return Response(
                 serializer.to_representation(instance=model_create),
                 status=status.HTTP_201_CREATED,
