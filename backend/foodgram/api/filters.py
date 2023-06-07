@@ -17,12 +17,12 @@ class RecipeFilter(filters.FilterSet):
     author = filters.ModelChoiceFilter(
         queryset=CustomUser.objects.all())
 
-    is_favorite = filters.BooleanFilter(
-        field_name='is_favorite', method='favorite_filter'
+    is_favorited = filters.BooleanFilter(
+        field_name='is_favorited', method='favorite_filter'
     )
 
     is_in_shopping_cart = filters.BooleanFilter(
-        field_name='is_cart', method='cart_filter')
+        field_name='is_in_shopping_cart', method='cart_filter')
 
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
 
