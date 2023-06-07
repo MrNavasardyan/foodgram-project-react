@@ -22,7 +22,7 @@ class RecipeFilter(filters.FilterSet):
     )
     # is_cart = filters.BooleanFilter(field_name='is_cart', method='cart_filter')
     is_in_shopping_cart = filters.BooleanFilter(
-        method='cart_filter')
+        field_name='is_cart', method='cart_filter')
 
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
 
