@@ -163,6 +163,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeCreateSerializer
 
     @staticmethod
+    def post_favorite_or_shopping_cart(model, user, recipe):
+        model_create, create = model.objects.get_or_create(
+            user=user, recipe=recipe
+        )
+        if create:
+            if str(model) == 'Favorite':
+                serializer = FavoriteSerializer()
+            else:
+                serializer = CartSerializer()
+            return Response(
+                serializer.to_representation(instance=model_create),
+                status=status.HTTP_201_CREATED,
+            )
+    @staticmethod
     def delete_favorite_or_shopping_cart(model, user, recipe):
         model.objects.filter(user=user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
