@@ -197,7 +197,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         Получить / Добавить / Удалить  рецепт
         из списка покупок у текущего пользоватля.
         """
-        recipe = get_object_or_404(Recipe, id=self.kwargs.get('pk'))
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('id'))
         user = self.request.user
         if request.method == 'POST':
             if ShoppingCart.objects.filter(user=user,
