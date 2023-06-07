@@ -165,9 +165,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=(IsAuthenticated,))
-    def favorite(self, request, **kwargs):
+    def favorite(self, request, pk):
         user = request.user
-        recipe = get_object_or_404(Recipe, id=kwargs['id'])
+        recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == 'POST':
             serializer = FavoriteSerializer(recipe, data=request.data,
@@ -192,12 +192,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         permission_classes=(IsAuthenticated,),
     )
-    def shopping_cart(self, request):
+    def shopping_cart(self, request, pk):
         """
         Получить / Добавить / Удалить  рецепт
         из списка покупок у текущего пользоватля.
         """
-        recipe = get_object_or_404(Recipe, id=self.kwargs.get('id'))
+        recipe = get_object_or_404(Recipe, id=pk)
         user = self.request.user
         if request.method == 'POST':
             if ShoppingCart.objects.filter(user=user,
