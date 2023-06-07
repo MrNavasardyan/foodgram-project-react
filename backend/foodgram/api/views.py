@@ -22,9 +22,7 @@ from recipes.models import (
     RecipeIngredient,
     Tag,
 )
-
 from users.models import CustomUser, Follow
-
 from .filters import IngredientLookupFilter, RecipeFilter
 from .pagination import CustomPageNumberPagination
 from .permissions import AdminOrReadOnly, AuthorOrReadOnly
@@ -117,9 +115,10 @@ class CustomUserViewSet(UserViewSet):
             follow = Follow.objects.create(user=user, author=author)
             serializer = FollowSerializer(follow, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        follow = Follow.objects.filter(user=user, author=author)
-        if follow.exists():
-            follow.delete()
+        elif request.method == 'DELETE':
+            follow = Follow.objects.filter(user=user, author=author)
+            if follow.exists():
+                follow.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
             {'subscribe': 'Ранее вы уже отписались от этого автора.'},
@@ -163,21 +162,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeCreateSerializer
 
     @staticmethod
-    def post_favorite_or_shopping_cart(model, user, recipe):
+    def post_favorite(model, user, recipe):
         model_create, create = model.objects.get_or_create(
             user=user, recipe=recipe
         )
         if create:
             if str(model) == 'Favorite':
                 serializer = FavoriteSerializer()
-            else:
-                serializer = CartSerializer()
             return Response(
                 serializer.to_representation(instance=model_create),
                 status=status.HTTP_201_CREATED,
             )
     @staticmethod
-    def delete_favorite_or_shopping_cart(model, user, recipe):
+    def delete_favorite(model, user, recipe):
         model.objects.filter(user=user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -193,9 +190,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     {'favorite': 'Рецепт уже добавлен в избранное.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            return self.post_favorite_or_shopping_cart(Favorite, user, recipe)
+            return self.post_favorite(Favorite, user, recipe)
         elif request.method == 'DELETE':
-            return self.delete_favorite_or_shopping_cart(
+            return self.delete_favorite(
                 Favorite, user, recipe
             )
         return Response(status=status.HTTP_400_BAD_REQUEST)
