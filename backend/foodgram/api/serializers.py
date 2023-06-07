@@ -334,8 +334,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'ingredients',
             'tags',
             'cooking_time',
-            'is_favorite',
-            'is_cart',
+            'is_favorited',
+            'is_in_shopping_cart',
         )
 
 
