@@ -163,14 +163,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeListSerializer
         return RecipeCreateSerializer
 
-    @action(detail=True, methods=['post', 'delete'],
+    @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
     def favorite(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == 'POST':
-            serializer = FavoriteSerializer(recipe, data=request.data,
+            serializer = RecipeItemSerializer(recipe, data=request.data,
                                           context={"request": request})
             serializer.is_valid(raise_exception=True)
             if not Favorite.objects.filter(user,
