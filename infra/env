@@ -1,6 +1,0 @@
-SECRET_KEY="django-insecure-jta$4)v*a!k((5y*@l!oa3for22u)-a7=vhyei7l6sotos%hkr"
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=password
-DB_HOST=db
-DB_PORT=5432
