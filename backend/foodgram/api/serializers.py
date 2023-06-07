@@ -335,22 +335,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
     cooking_time = serializers.CharField(
         read_only=True, source='recipe.cooking_time'
     )
-    # def validate(self, data):
-    #     user = data['user']
-    #     recipe = data['recipe']
-    #     if user == recipe.author:
-    #         raise serializers.ValidationError(
-    #             {
-    #                 'recipes': (
-    #                     'Подписываться на свой рецепт запрещено'
-    #                 )
-    #             }
-    #         )
-    #     if Favorite.objects.filter(user=user, recipe=recipe).exists():
-    #         raise serializers.ValidationError(
-    #             {'recipes': 'Рецепт уже добавлен в избранное.'}
-    #         )
-    #     return data
 
     class Meta:
         model = Favorite

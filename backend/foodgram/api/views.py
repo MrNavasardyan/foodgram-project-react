@@ -200,24 +200,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
         user = self.request.user
         if request.method == 'POST':
-            if ShoppingCart.objects.filter(user=user,
-                                           recipe=recipe).exists():
-                return Response({'errors': 'Рецепт уже добавлен!'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            serializer = CartSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(user=user, recipe=recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        if not ShoppingCart.objects.filter(user=user,
-                                           recipe=recipe).exists():
-            return Response({'errors': 'Объект не найден'},
-                            status=status.HTTP_404_NOT_FOUND)
-        ShoppingCart.objects.get(recipe=recipe).delete()
-        return Response('Рецепт успешно удалён из списка покупок.',
-                        status=status.HTTP_204_NO_CONTENT)
+            if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
+                return Response(
+                    {'shopping_cart': 'Рецепт уже добавлен в список покупок.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return self.post_favorite_or_shopping_cart(ShoppingCart, user, recipe)
+        elif request.method == 'DELETE':
+            return self.delete_favorite_or_shopping_cart(ShoppingCart, user, recipe)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['get'],
