@@ -296,7 +296,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     )
     tags = TagSerializer(read_only=True, many=True)
     is_favorite = serializers.SerializerMethodField()
-    is_cart = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     def get_is_favorite(self, obj):
         user = self.context.get('request').user

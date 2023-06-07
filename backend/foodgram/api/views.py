@@ -213,10 +213,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if cart.exists():
                 cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        # if request.method == 'DELETE':
-        #     ShoppingCart.objects.get(recipe=recipe).delete()
-        #     return Response('Рецепт успешно удалён из списка покупок.',
-        #                 status=status.HTTP_204_NO_CONTENT)
 
 
     @action(detail=False, methods=['GET'],

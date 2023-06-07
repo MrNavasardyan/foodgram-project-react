@@ -20,7 +20,7 @@ class RecipeFilter(filters.FilterSet):
     is_favorite = filters.BooleanFilter(
         field_name='is_favorite', method='favorite_filter'
     )
-    is_cart = filters.BooleanFilter(field_name='is_cart', method='cart_filter')
+    is_in_shopping_cart = filters.BooleanFilter(field_name='is_in_shopping_cart', method='cart_filter')
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
 
     def favorite_filter(self, queryset, name, value):
