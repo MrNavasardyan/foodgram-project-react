@@ -155,11 +155,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-    def get_serializer_class(self):
-        if self.action in ('retrieve', 'list'):
-            return RecipeListSerializer
-        return RecipeCreateSerializer
-
     @staticmethod
     def post_favorite(model, user, recipe):
         model_create, create = model.objects.get_or_create(
@@ -177,6 +172,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def delete_favorite(model, user, recipe):
         model.objects.filter(user=user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def get_serializer_class(self):
+        if self.action in ('retrieve', 'list'):
+            return RecipeListSerializer
+        return RecipeCreateSerializer
+
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
