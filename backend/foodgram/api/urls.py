@@ -8,14 +8,14 @@ from .views import (
     TagViewSet,
 )
 
-router_v1 = SimpleRouter()
-router_v1.register('users', CustomUserViewSet, basename='users')
-router_v1.register('recipes', RecipeViewSet, basename='recipes')
-router_v1.register('tags', TagViewSet, basename='tags')
-router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
+router = SimpleRouter()
+router.register('users', CustomUserViewSet, basename='users')
+router.register('recipes', RecipeViewSet, basename='recipes')
+router.register('tags', TagViewSet, basename='tags')
+router.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
+    path('', include(router.urls)),
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]
