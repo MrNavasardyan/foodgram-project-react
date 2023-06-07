@@ -299,15 +299,15 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Favorite.objects.filter(user=user, recipe=obj).exists()
-        # return (
-        #     self.context.get('request').user.is_authenticated
-        #     and Favorite.objects.filter(user=self.context['request'].user,
-        #                                 recipe=obj).exists()
-        # )
+        # user = self.context.get('request').user
+        # if user.is_anonymous:
+        #     return False
+        # return Favorite.objects.filter(user=user, recipe=obj).exists()
+        return (
+            self.context.get('request').user.is_authenticated
+            and Favorite.objects.filter(user=self.context['request'].user,
+                                        recipe=obj).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
 
@@ -337,16 +337,16 @@ class RecipeListSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор обработки данных списка избранного."""
 
-    id = serializers.CharField(read_only=True, source='recipe.id')
-    name = serializers.CharField(read_only=True, source='recipe.name')
-    image = serializers.CharField(read_only=True, source='recipe.image')
-    cooking_time = serializers.CharField(
-        read_only=True, source='recipe.cooking_time'
-    )
+    # id = serializers.CharField(read_only=True, source='recipe.id')
+    # name = serializers.CharField(read_only=True, source='recipe.name')
+    # image = serializers.CharField(read_only=True, source='recipe.image')
+    # cooking_time = serializers.CharField(
+    #     read_only=True, source='recipe.cooking_time'
+    # )
 
     class Meta:
         model = Favorite
-        fields = '__all__'
+        fields = ('user', 'recipe')
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),
@@ -354,6 +354,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
                 message='Рецепт уже добавлен в избранное'
             )
         ]
+
         def to_representation(self, instance):
             request = self.context.get('request')
             return RecipeItemSerializer(
