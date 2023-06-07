@@ -366,7 +366,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         )
 
 
-
 class CartSerializer(serializers.ModelSerializer):
     """Сериализатор обработки данных списка покупок."""
 

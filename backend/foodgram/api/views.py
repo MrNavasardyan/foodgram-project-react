@@ -86,7 +86,7 @@ class CustomUserViewSet(UserViewSet):
         queryset = Follow.objects.filter(user=user)
         page = self.paginate_queryset(queryset)
         serializer = FollowSerializer(page, many=True,
-                                             context={'request': request})
+                                      context={'request': request})
         return self.get_paginated_response(serializer.data)
 
     @action(
@@ -155,7 +155,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
             return RecipeListSerializer
@@ -173,6 +172,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 serializer.to_representation(instance=model_create),
                 status=status.HTTP_201_CREATED,
             )
+
     @staticmethod
     def delete_favorite(model, user, recipe):
         model.objects.filter(user=user, recipe=recipe).delete()
@@ -210,22 +210,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
             serializer = CartSerializer(recipe, data=request.data,
-                                          context={"request": request})
+                                        context={"request": request})
             serializer.is_valid(raise_exception=True)
             if not ShoppingCart.objects.filter(user=request.user,
-                                                recipe=recipe).exists():
+                                               recipe=recipe).exists():
                 ShoppingCart.objects.create(user=request.user, recipe=recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
             return Response({'errors': 'Рецепт уже в списке покупок.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        if request.method == 'DELETE':
+        elif request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)
             if cart.exists():
                 cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
