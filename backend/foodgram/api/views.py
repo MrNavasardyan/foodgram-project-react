@@ -70,7 +70,7 @@ class CustomUserViewSet(UserViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @action(detail=False, methods=['get'],
+    @action(detail=False, methods=['GET'],
             pagination_class=None,
             permission_classes=(IsAuthenticated,))
     def me(self, request):
@@ -79,8 +79,7 @@ class CustomUserViewSet(UserViewSet):
                         status=status.HTTP_200_OK)
 
     @action(
-        methods=('GET',),
-        detail=False,
+        detail=False, methods=['GET'],
         permission_classes=(IsAuthenticated,),
         url_path='subscriptions',
     )
@@ -170,7 +169,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == 'POST':
-            serializer = RecipeItemSerializer(recipe, data=request.data,
+            serializer = FavoriteSerializer(recipe, data=request.data,
                                           context={"request": request})
             serializer.is_valid(raise_exception=True)
             if not Favorite.objects.filter(user,
@@ -180,12 +179,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_201_CREATED)
             return Response({'errors': 'Рецепт уже в избранном.'},
                             status=status.HTTP_400_BAD_REQUEST)
-
-        if request.method == 'DELETE':
-            get_object_or_404(Favorite, user=request.user,
-                              recipe=recipe).delete()
-            return Response({'detail': 'Рецепт успешно удален из избранного.'},
-                            status=status.HTTP_204_NO_CONTENT)
+        favorite = Favorite.objects.filter(recipe=recipe)
+        if favorite.exists():
+            favorite.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # return Response(
+        #     {'subscribe': 'Ранее вы уже отписались от этого автора.'},
+        #     status=status.HTTP_400_BAD_REQUEST,
+        # )
+        # if request.method == 'DELETE':
+        #     Favorite.objects.get(recipe=recipe).delete()
+        #     return Response('Рецепт успешно удалён из избранного.',
+        #                 status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=('POST', 'DELETE'),
@@ -210,16 +215,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response({'errors': 'Рецепт уже в списке покупок.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        elif request.method == 'DELETE':
-            get_object_or_404(ShoppingCart, user=request.user,
-                              recipe=recipe).delete()
-            return Response(
-                {'detail': 'Рецепт успешно удален из списка покупок.'},
-                status=status.HTTP_204_NO_CONTENT
-            )
+        if request.method == 'DELETE':
+            ShoppingCart.objects.get(recipe=recipe).delete()
+            return Response('Рецепт успешно удалён из списка покупок.',
+                        status=status.HTTP_204_NO_CONTENT)
 
 
-    @action(detail=False, methods=['get'],
+    @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request, **kwargs):
         ingredients = (
