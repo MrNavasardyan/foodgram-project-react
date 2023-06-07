@@ -354,12 +354,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time',
-        )
+        fields = '__all__'
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),
@@ -367,6 +362,13 @@ class FavoriteSerializer(serializers.ModelSerializer):
                 message='Рецепт уже добавлен в избранное'
             )
         ]
+        def to_representation(self, instance):
+            request = self.context.get('request')
+            return RecipeItemSerializer(
+                instance.recipe,
+                context={'request': request}
+                ).data
+
 
 
 class CartSerializer(serializers.ModelSerializer):
