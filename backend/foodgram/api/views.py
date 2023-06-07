@@ -162,27 +162,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeListSerializer
         return RecipeCreateSerializer
 
+    @staticmethod
+    def delete_favorite_or_shopping_cart(model, user, recipe):
+        model.objects.filter(user=user, recipe=recipe).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
     def favorite(self, request, pk):
+        user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == 'POST':
-            serializer = FavoriteSerializer(recipe, data=request.data,
-                                          context={"request": request})
-            serializer.is_valid(raise_exception=True)
-            if not Favorite.objects.filter(user=request.user,
-                                           recipe=recipe).exists():
-                Favorite.objects.create(user=request.user, recipe=recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response({'errors': 'Рецепт уже в избранном.'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        if request.method == 'DELETE':
-            favorite = Favorite.objects.filter(recipe=recipe)
-            if favorite.exists():
-                favorite.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            if Favorite.objects.filter(user=user, recipe=recipe).exists():
+                return Response(
+                    {'favorite': 'Рецепт уже добавлен в избранное.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return self.post_favorite_or_shopping_cart(Favorite, user, recipe)
+        elif request.method == 'DELETE':
+            return self.delete_favorite_or_shopping_cart(
+                Favorite, user, recipe
+            )
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=('POST', 'DELETE'),
