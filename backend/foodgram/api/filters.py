@@ -18,7 +18,7 @@ class RecipeFilter(filters.FilterSet):
         queryset=CustomUser.objects.all())
 
     is_favorited = filters.BooleanFilter(
-        field_name='is_favorited', method='favorite_filter'
+        field_name='is_favorited', method='is_favorited'
     )
 
     is_in_shopping_cart = filters.BooleanFilter(
@@ -26,7 +26,7 @@ class RecipeFilter(filters.FilterSet):
 
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
 
-    def favorite_filter(self, queryset, name, value):
+    def is_favorited(self, queryset, name, value):
         recipes = Recipe.objects.filter(favorites__user=self.request.user)
         return recipes
 
