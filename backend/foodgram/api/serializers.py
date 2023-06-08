@@ -406,11 +406,7 @@ class CartSerializer(serializers.ModelSerializer):
         recipe = data.get('recipe')
 
         if self.context.get("request").method == 'POST':
-            # Adding a recipe to a shopping list
-            # (1) Check if a recipe has been added to user's shopping list
             if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
                 raise serializers.ValidationError(
-                    'You have already added this recipe to you shopping list')
-
-            # (2) Check if a recipe doesn't exist
+                    'Рецепт уже был добавлен в список покупок!')
         return data
