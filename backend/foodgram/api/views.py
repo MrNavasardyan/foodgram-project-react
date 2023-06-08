@@ -98,11 +98,6 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(CustomUser, id=id)
         if request.method == 'POST':
-            # if Follow.objects.filter(user=user, author=author).exists():
-            #     return Response(
-            #         {'': 'Подписка на этого автора уже активна.'},
-            #         status=status.HTTP_400_BAD_REQUEST,
-            #     )
             data = {'user': user.id, 'author': author.id}
             serializer = FollowSerializer(data=data, context={'request': request})
             serializer.is_valid(raise_exception=True)
