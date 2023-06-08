@@ -101,20 +101,10 @@ class CustomUserViewSet(UserViewSet):
             serializer = FollowSerializer(
                 data=request.data,
                 context={'request': request, 'author': author})
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(author=author, user=user)
-                return Response({'Подписка успешно создана': serializer.data},
+            serializer.is_valid(raise_exception=True):
+            serializer.save(author=author, user=user)
+            return Response({'Подписка успешно создана': serializer.data},
                                 status=status.HTTP_201_CREATED)
-            return Response({'errors': 'Объект не найден'},
-                            status=status.HTTP_404_NOT_FOUND)
-
-            # data = {'user': user.id, 'author': author.id}
-            # serializer = FollowSerializer(data=data, context={'request': request})
-            # serializer.is_valid(raise_exception=True)
-            # serializer.save()
-            # follow = Follow.objects.create(user=user, author=author)
-            # serializer = FollowSerializer(follow, context={'request': request})
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
             if follow.exists():

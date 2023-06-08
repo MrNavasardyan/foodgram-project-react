@@ -112,10 +112,6 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
                 detail='Невозможно подписаться на себя!',
                 code=status.HTTP_400_BAD_REQUEST)
         return data
-        # user = self.context['request'].user
-        # if user == author:
-        #     raise serializers.ValidationError("Нельзя подписаться на самого себя.")
-        # return author
 
 
     class Meta:
