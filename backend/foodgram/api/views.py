@@ -101,7 +101,7 @@ class CustomUserViewSet(UserViewSet):
             serializer = FollowSerializer(
                 data=request.data,
                 context={'request': request, 'author': author})
-            serializer.is_valid(raise_exception=True):
+            serializer.is_valid(raise_exception=True)
             serializer.save(author=author, user=user)
             return Response({'Подписка успешно создана': serializer.data},
                                 status=status.HTTP_201_CREATED)
