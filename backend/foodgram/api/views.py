@@ -103,7 +103,7 @@ class CustomUserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             # follow = Follow.objects.create(user=user, author=author)
-            # serializer = FollowSerializer(follow, context={'request': request})
+            serializer = FollowSerializer(follow, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)

@@ -391,7 +391,7 @@ class CartSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def create(self, validated_data):
+    def validate(self, validated_data):
         user = self.context['request'].user
         recipe = validated_data['recipe']
         if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
