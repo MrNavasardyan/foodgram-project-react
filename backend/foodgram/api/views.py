@@ -205,8 +205,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             # if not ShoppingCart.objects.filter(user=request.user,
             #                                    recipe=recipe).exists():
-            #     ShoppingCart.objects.create(user=request.user, recipe=recipe)
-            serializer.save(user=request.user, recipe=recipe)
+            ShoppingCart.objects.create(user=request.user, recipe=recipe)
+            # serializer.save(user=request.user, recipe=recipe)
             return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
