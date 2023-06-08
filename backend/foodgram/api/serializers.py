@@ -409,4 +409,4 @@ class CartSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 detail='Вы уже добавили этот рецепт!',
                 code=status.HTTP_400_BAD_REQUEST)
-
+        return data

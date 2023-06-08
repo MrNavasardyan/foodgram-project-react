@@ -209,8 +209,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save(user=request.user, recipe=recipe)
             return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
-            return Response({'errors': 'Рецепт уже в списке покупок.'},
-                            status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)
             if cart.exists():
