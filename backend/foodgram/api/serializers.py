@@ -403,7 +403,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context.get('request').user
-        recipe = self.context.get('recipe_id')
+        recipe = self.context.get('recipe')
         if ShoppingCart.objects.filter(user=user,
                                        recipe=recipe).exists():
             raise serializers.ValidationError({
