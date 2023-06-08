@@ -403,8 +403,3 @@ class CartSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
-
-    def validate_user(data):
-        user = data.context['request'].user
-        if ShoppingCart.objects.filter(user=user, recipe=data.instance).exists():
-            raise serializers.ValidationError("Рецепт уже в списке покупок.")
