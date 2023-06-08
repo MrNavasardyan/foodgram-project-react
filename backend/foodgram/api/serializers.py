@@ -404,9 +404,8 @@ class CartSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def validate(self, attrs):
-        if not ShoppingCart.objects.filter(user=attrs.user,
-                                               recipe=attrs).exists():
-            raise serializers.ValidationError('Объект не найден'
-                    )
-        return attrs
+    def validate(self, request):
+        if not ShoppingCart.objects.filter(user=request.user,
+                                               recipe=request.recipe).exists():
+            return True
+        return serializers.ValidationError('Рецепт уже добавлен!')
