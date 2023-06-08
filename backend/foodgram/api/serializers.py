@@ -318,6 +318,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             self.context.get('request').user.is_authenticated
             and Favorite.objects.filter(user=self.context['request'].user,
                                         recipe=obj).exists()
+
         )
         # return obj.id in self.context['favorites']
 

@@ -168,14 +168,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeListSerializer
         return RecipeCreateSerializer
 
-    # def get_serializer_context(self):
-    #      return {
-    #           'request': self.request,
-    #           'format': self.format_kwarg,
-    #           'view': self,
-    #           'favorites': set(Favorite.objects.filter(user_id=self.request.user).values_list('recipe_id', flat=True)),
-    #       }
-
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
@@ -220,6 +212,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+        elif request.method == 'DELETE':
+            cart = ShoppingCart.objects.filter(recipe=recipe)
+            if cart.exists():
+                cart.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
