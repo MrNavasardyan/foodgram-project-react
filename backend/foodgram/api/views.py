@@ -204,6 +204,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                         context={"request": request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            ShoppingCart.objects.create(user=request.user, recipe=recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
             # if not ShoppingCart.objects.filter(user=request.user,
             #                                    recipe=recipe).exists():
