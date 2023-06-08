@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
 from rest_framework.validators import UniqueTogetherValidator
-
+from rest_framework import status
 from recipes.models import (
     ShoppingCart,
     Favorite,
@@ -98,11 +98,24 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
             queryset = queryset[: int(recipes_limit)]
         return RecipeItemSerializer(queryset, many=True).data
 
-    def validate(self, author):
-        user = self.context['request'].user
+    def validate(self, data):
+        author = self.context.get('author')
+        user = self.context.get('request').user
+        if Follow.objects.filter(
+                author=author,
+                user=user).exists():
+            raise serializers.ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST)
         if user == author:
-            raise serializers.ValidationError("Нельзя подписаться на самого себя.")
-        return author
+            raise serializers.ValidationError(
+                detail='Невозможно подписаться на себя!',
+                code=status.HTTP_400_BAD_REQUEST)
+        return data
+        # user = self.context['request'].user
+        # if user == author:
+        #     raise serializers.ValidationError("Нельзя подписаться на самого себя.")
+        # return author
 
 
     class Meta:
@@ -390,3 +403,10 @@ class CartSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
+
+    def validate(self, attrs):
+        if not ShoppingCart.objects.filter(user=attrs.user,
+                                               recipe=attrs).exists():
+            raise serializers.ValidationError('Объект не найден'
+                    )
+        return attrs
