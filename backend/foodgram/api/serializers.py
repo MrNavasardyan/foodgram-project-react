@@ -98,11 +98,24 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
             queryset = queryset[: int(recipes_limit)]
         return RecipeItemSerializer(queryset, many=True).data
 
-    def validate(self, author):
-        user = self.context['request'].user
+    # def validate(self, author):
+    #     user = self.context['request'].user
+    #     if user == author:
+    #         raise serializers.ValidationError("Нельзя подписаться на самого себя.")
+    #     return author
+    def validate(self, data):
+        user = data['user']
+        author = data['author']
         if user == author:
-            raise serializers.ValidationError("Нельзя подписаться на самого себя.")
-        return author
+            raise serializers.ValidationError(
+                {
+                    'subscribe': (
+                        'Нельзя подписаться на самого себя.'
+                    )
+                }
+            )
+
+        return data
 
 
     class Meta:

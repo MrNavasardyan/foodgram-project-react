@@ -98,29 +98,18 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(CustomUser, id=id)
         if request.method == 'POST':
-            if Follow.objects.filter(user=user, author=author).exists():
-                return Response(
-                    {'subscribe': 'Подписка на этого автора уже активна.'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            # if Follow.objects.filter(user=user, author=author).exists():
+            #     return Response(
+            #         {'': 'Подписка на этого автора уже активна.'},
+            #         status=status.HTTP_400_BAD_REQUEST,
+            #     )
             data = {'user': user.id, 'author': author.id}
             serializer = FollowSerializer(data=data, context={'request': request})
             serializer.is_valid(raise_exception=True)
-            follow = serializer.save()
+            serializer.save()
             follow = Follow.objects.create(user=user, author=author)
             serializer = FollowSerializer(follow, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            # if user == author:
-            #     return Response(
-            #         {
-            #             'subscribe': (
-            #                 'Нельзя подписаться на самого себя.'
-            #             )
-            #         },
-            #         status=status.HTTP_400_BAD_REQUEST,
-            #     )
-
-
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
             if follow.exists():
