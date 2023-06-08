@@ -88,7 +88,7 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
 
     @staticmethod
     def get_recipes_count(obj):
-        return obj.user.recipes.count()
+        return obj.author.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -314,12 +314,12 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     def get_is_favorited(self, obj):
-        # return (
-        #     self.context.get('request').user.is_authenticated
-        #     and Favorite.objects.filter(user=self.context['request'].user,
-        #                                 recipe=obj).exists()
-        # )
-        return obj.id in self.context['favorites']
+        return (
+            self.context.get('request').user.is_authenticated
+            and Favorite.objects.filter(user=self.context['request'].user,
+                                        recipe=obj).exists()
+        )
+        # return obj.id in self.context['favorites']
 
     def get_is_in_shopping_cart(self, obj):
         return (

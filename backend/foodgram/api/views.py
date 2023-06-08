@@ -168,13 +168,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeListSerializer
         return RecipeCreateSerializer
 
-    def get_serializer_context(self):
-         return {
-              'request': self.request,
-              'format': self.format_kwarg,
-              'view': self,
-              'favorites': set(Favorite.objects.filter(user_id=self.request.user).values_list('recipe_id', flat=True)),
-          }
+    # def get_serializer_context(self):
+    #      return {
+    #           'request': self.request,
+    #           'format': self.format_kwarg,
+    #           'view': self,
+    #           'favorites': set(Favorite.objects.filter(user_id=self.request.user).values_list('recipe_id', flat=True)),
+    #       }
 
 
     @action(detail=True, methods=['POST', 'DELETE'],
