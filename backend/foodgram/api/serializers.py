@@ -100,7 +100,7 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
 
     def validate(self, data):
         author = self.context.get('author')
-        user = self.context.get('request').user
+        user = self.context.
         if Follow.objects.filter(
                 author=author,
                 user=user).exists():
@@ -404,8 +404,10 @@ class CartSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def validate(self, request):
-        if not ShoppingCart.objects.filter(user=request.user,
-                                               recipe=request.recipe).exists():
+    def validate(self, data):
+        user=self.context.get('request').user
+        recipe=self.context.get('request').recipe
+        if not ShoppingCart.objects.filter(user=user,
+                                               recipe=recipe).exists():
             return True
         return serializers.ValidationError('Рецепт уже добавлен!')
