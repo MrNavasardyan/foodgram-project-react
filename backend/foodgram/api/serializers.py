@@ -259,8 +259,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return super().update(recipe, validated_data)
 
     def to_representation(self, recipe):
-        request = self.context.get('request')
-        context = {'request': request}
+        # request = self.context.get('request')
+        # context = {'request': request}
+        context = self.context
         return RecipeListSerializer(recipe, context=context).data
 
     class Meta:
