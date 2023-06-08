@@ -102,8 +102,8 @@ class CustomUserViewSet(UserViewSet):
             serializer = FollowSerializer(data=data, context={'request': request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            follow = Follow.objects.create(user=user, author=author)
-            serializer = FollowSerializer(follow, context={'request': request})
+            # follow = Follow.objects.create(user=user, author=author)
+            # serializer = FollowSerializer(follow, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
@@ -203,13 +203,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = CartSerializer(recipe, data=request.data,
                                         context={"request": request})
             serializer.is_valid(raise_exception=True)
-            if not ShoppingCart.objects.filter(user=request.user,
-                                               recipe=recipe).exists():
-                ShoppingCart.objects.create(user=request.user, recipe=recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response({'errors': 'Рецепт уже в списке покупок.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # if not ShoppingCart.objects.filter(user=request.user,
+            #                                    recipe=recipe).exists():
+            #     ShoppingCart.objects.create(user=request.user, recipe=recipe)
+            #     return Response(serializer.data,
+            #                     status=status.HTTP_201_CREATED)
+            # return Response({'errors': 'Рецепт уже в списке покупок.'},
+            #                 status=status.HTTP_400_BAD_REQUEST)
 
         elif request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)

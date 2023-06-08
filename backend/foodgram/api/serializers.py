@@ -390,3 +390,12 @@ class CartSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        recipe = validated_data['recipe']
+        if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
+            raise serializers.ValidationError('Рецепт уже в списке покупок.')
+        cart = ShoppingCart.objects.create(user=user, recipe=recipe)
+        serializer = self.__class__(cart, context=self.context)
+        return serializer.data
