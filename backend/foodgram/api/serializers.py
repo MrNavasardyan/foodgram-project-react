@@ -404,11 +404,7 @@ class CartSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def create(self, validated_data):
-        user=self.context.get('request').user
-        recipe=validated_data.pop('recipe')
-        if not ShoppingCart.objects.filter(user=user,
-                                               recipe=recipe).exists():
-                cart = ShoppingCart.objects.create(user=user, recipe=recipe)
-                return cart
-        return serializers.ValidationError('Рецепт уже добавлен')
+    def validate(recipe):
+        user = recipe.context['request'].user
+        if ShoppingCart.objects.filter(user=user, recipe=recipe.instance).exists():
+            raise serializers.ValidationError("Рецепт уже в списке покупок.")
