@@ -320,7 +320,6 @@ class RecipeListSerializer(serializers.ModelSerializer):
                                         recipe=obj).exists()
 
         )
-        # return obj.id in self.context['favorites']
 
     def get_is_in_shopping_cart(self, obj):
         return (
