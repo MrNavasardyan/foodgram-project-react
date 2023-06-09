@@ -88,7 +88,7 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
 
     @staticmethod
     def get_recipes_count(obj):
-        return obj.user.recipes.count()
+        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
