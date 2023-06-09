@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
 from rest_framework.validators import UniqueTogetherValidator
-
+from rest_framework import status
 from recipes.models import (
     ShoppingCart,
     Favorite,
@@ -88,7 +88,7 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
 
     @staticmethod
     def get_recipes_count(obj):
-        return obj.user.recipes.count()
+        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -97,6 +97,22 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
         if recipes_limit:
             queryset = queryset[: int(recipes_limit)]
         return RecipeItemSerializer(queryset, many=True).data
+
+    def validate(self, data):
+        author = self.context.get('author')
+        user = self.context.get('user')
+        if Follow.objects.filter(
+                author=author,
+                user=user).exists():
+            raise serializers.ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST)
+        if user == author:
+            raise serializers.ValidationError(
+                detail='Невозможно подписаться на себя!',
+                code=status.HTTP_400_BAD_REQUEST)
+        return data
+
 
     class Meta:
         model = Follow
@@ -259,9 +275,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return super().update(recipe, validated_data)
 
     def to_representation(self, recipe):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeListSerializer(recipe, context=context).data
+        return RecipeListSerializer(recipe, context=self.context).data
 
     class Meta:
         model = Recipe
@@ -303,6 +317,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             self.context.get('request').user.is_authenticated
             and Favorite.objects.filter(user=self.context['request'].user,
                                         recipe=obj).exists()
+
         )
 
     def get_is_in_shopping_cart(self, obj):
@@ -384,3 +399,14 @@ class CartSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
+
+
+    def validate(self, data):
+        user = data.get('user')
+        recipe = data.get('recipe')
+
+        if self.context.get("request").method == 'POST':
+            if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
+                raise serializers.ValidationError(
+                    'Рецепт уже был добавлен в список покупок!')
+        return data
