@@ -13,9 +13,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*',
     'http://localhost:8000',
     'https://localhost:8000',
-    'http://localhost:8000',
-    'http://localhost:8080',
-    'http://backend:8000'
+    'http://web:8000',
+    'http://localhost',
+    'http://localhost'
 ]
 
 ALLOWED_HOSTS = [
@@ -144,7 +144,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = 'media/'
 
-MEDIA_ROOT = '/app/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
