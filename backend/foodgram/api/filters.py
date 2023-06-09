@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from recipes.models import Ingredient, Recipe
+from recipes.models import Ingredient, Recipe, Tag
 from users.models import CustomUser
 
 
@@ -24,16 +24,21 @@ class RecipeFilter(filters.FilterSet):
     is_in_shopping_cart = filters.BooleanFilter(
         field_name='is_in_shopping_cart', method='is_in_shopping_cart')
 
-    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug',
+                                             to_field_name='slug',
+                                             queryset=Tag.objects.all())
 
     def is_favorited(self, queryset, name, value):
-        recipes = Recipe.objects.filter(favorites__user=self.request.user)
-        return recipes
+        user = self.request.user
+        if value and user.is_authenticated:
+            return Recipe.objects.filter(favorites__user=self.request.user)
+        # return recipes
 
     def is_in_shopping_cart(self, queryset, name, value):
-        recipes = Recipe.objects.filter(cart__user=self.request.user)
-        return recipes
+        user = self.request.user
+        if value and user.is_authenticated:
+            return Recipe.objects.filter(cart__user=self.request.user)
 
     class Meta:
         model = Recipe
-        fields = ('author',)
+        fields = ('tags', 'author',)
