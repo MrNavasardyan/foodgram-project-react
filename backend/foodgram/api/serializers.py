@@ -312,35 +312,35 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
-    def get_is_favorited(self, obj):
-        request = self.context.get('request')
-        if request.user.is_anonymous:
-            return False
-        favorite = request.user.favorites.filter(recipe=obj)
-        return favorite.exists()
-
-    def get_is_in_shopping_cart(self, obj):
-        request = self.context.get('request')
-        if request.user.is_anonymous:
-            return False
-        shopping_cart = request.user.cart.filter(recipe=obj)
-        return shopping_cart.exists()
-
     # def get_is_favorited(self, obj):
-    #     return (
-    #         self.context.get('request').user.is_authenticated
-    #         and Favorite.objects.filter(user=self.context['request'].user,
-    #                                     recipe=obj).exists()
-
-    #     )
+    #     request = self.context.get('request')
+    #     if request.user.is_anonymous:
+    #         return False
+    #     favorite = request.user.favorites.filter(recipe=obj)
+    #     return favorite.exists()
 
     # def get_is_in_shopping_cart(self, obj):
-    #     return (
-    #         self.context.get('request').user.is_authenticated
-    #         and ShoppingCart.objects.filter(
-    #             user=self.context['request'].user,
-    #             recipe=obj).exists()
-    #     )
+    #     request = self.context.get('request')
+    #     if request.user.is_anonymous:
+    #         return False
+    #     shopping_cart = request.user.cart.filter(recipe=obj)
+    #     return shopping_cart.exists()
+
+    def get_is_favorited(self, obj):
+        return (
+            self.context.get('request').user.is_authenticated
+            and Favorite.objects.filter(user=self.context['request'].user,
+                                        recipe=obj).exists()
+
+        )
+
+    def get_is_in_shopping_cart(self, obj):
+        return (
+            self.context.get('request').user.is_authenticated
+            and ShoppingCart.objects.filter(
+                user=self.context['request'].user,
+                recipe=obj).exists()
+        )
 
     class Meta:
         model = Recipe
