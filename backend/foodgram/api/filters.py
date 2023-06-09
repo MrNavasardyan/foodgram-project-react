@@ -28,6 +28,10 @@ class RecipeFilter(filters.FilterSet):
                                              to_field_name='slug',
                                              queryset=Tag.objects.all())
 
+    class Meta:
+        model = Recipe
+        fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
+
     def is_favorited(self, queryset, name, value):
         user = self.request.user
         if value and user.is_authenticated:
@@ -43,7 +47,7 @@ class RecipeFilter(filters.FilterSet):
 
 
 
-    class Meta:
-        model = Recipe
-        fields = ('tags', 'author',)
+    # class Meta:
+    #     model = Recipe
+    #     fields = ('tags', 'author',)
 
