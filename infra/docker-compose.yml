@@ -11,14 +11,13 @@ services:
     restart: always
     ports:
      - "8000:8000"
-    # "зависит от",
     depends_on:
       - db
     env_file:
       - ./.env
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
+      - static:/app/static/
+      - media:/app/media/
       - redoc:/app/docs/
   frontend:
     build:
@@ -35,9 +34,9 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
     depends_on:
-      - backend
+      - web
 volumes:
-  static_value:
-  media_value:
+  static:
+  media:
   db:
   redoc:
