@@ -98,13 +98,23 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(CustomUser, id=id)
         if request.method == 'POST':
-            serializer = FollowSerializer(
-                data=request.data,
-                context={'request': request, 'author': author})
-            serializer.is_valid(raise_exception=True)
-            serializer.save(author=author, user=user)
-            return Response({'Подписка успешно создана': serializer.data},
-                                status=status.HTTP_201_CREATED)
+            if user == author:
+                return Response(
+                    {
+                        'subscribe': (
+                            'Нельзя подписаться на самого себя.'
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            elif Follow.objects.filter(user=user, author=author).exists():
+                return Response(
+                    {'subscribe': 'Подписка на этого автора уже активна.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            follow = Follow.objects.create(user=user, author=author)
+            serializer = FollowSerializer(follow, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
             if follow.exists():
@@ -203,15 +213,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = CartSerializer(recipe, data=request.data,
                                         context={"request": request})
             serializer.is_valid(raise_exception=True)
-            ShoppingCart.objects.create(user=request.user, recipe=recipe)
-            return Response(serializer.data,
+            if not ShoppingCart.objects.filter(user=request.user,
+                                               recipe=recipe).exists():
+                ShoppingCart.objects.create(user=request.user, recipe=recipe)
+                return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            cart = ShoppingCart.objects.filter(recipe=recipe)
-            if cart.exists():
-                cart.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
+            return Response({'errors': 'Рецепт уже в списке покупок.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         elif request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)

@@ -13,14 +13,14 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*',
     'http://localhost:8000',
     'https://localhost:8000',
-    'http://web:8000',
-    'http://localhost',
-    'http://localhost'
+    'http://localhost:8000',
+    'http://localhost:8080',
+    'http://backend:8000'
 ]
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'web',
+    'backend',
     'localhost',
     '*'
 ]
@@ -31,7 +31,9 @@ ALLOWED_HOSTS = [
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -138,13 +140,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
