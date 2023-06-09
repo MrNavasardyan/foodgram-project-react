@@ -38,7 +38,7 @@ services:
     depends_on:
       - web
 volumes:
-  static:
-  media:
+  static_dir:
+  media_dir:
   db:
   redoc:
