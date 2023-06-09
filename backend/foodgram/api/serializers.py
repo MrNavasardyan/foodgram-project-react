@@ -333,7 +333,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         #                                 recipe=obj).exists()
 
         # )
-        user=self.context['user'].user
+        user=self.context.get('request').user
         if isinstance(user, CustomUser):
             return Favorite.objects.filter(user=user, recipe=obj).exists()
         return False
