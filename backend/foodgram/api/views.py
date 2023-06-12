@@ -213,12 +213,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-        elif request.method == 'DELETE':
-            cart = ShoppingCart.objects.filter(recipe=recipe)
-            if cart.exists():
-                cart.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request, **kwargs):
