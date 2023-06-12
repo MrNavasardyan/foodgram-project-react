@@ -19,7 +19,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://*.localhost',
     'http://127.0.0.1:8080'
     'http://localhost:8080',
-    '158.160.65.32',
     'http://foodgramng.ddns.net',
     'https://foodgramng.ddns.net',
     'http://158.160.65.32',
