@@ -42,4 +42,4 @@ jobs:
         with:
           context: backend/foodgram/.
           push: true
-          tags: ngrachik/diplom/web:latest
+          tags: ngrachik/web:latest
