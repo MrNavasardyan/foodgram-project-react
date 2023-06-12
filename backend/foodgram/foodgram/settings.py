@@ -23,7 +23,6 @@ CSRF_TRUSTED_ORIGINS = [
     '158.160.65.32',
     'http://foodgramng.ddns.net',
     'https://foodgramng.ddns.net'
-    ''
     ]
 
 
