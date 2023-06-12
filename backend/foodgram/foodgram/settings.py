@@ -30,8 +30,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'web',
     'localhost',
-    '158.160.65.32'
-    'foodgramng.ddns.net'
+    '158.160.65.32',
+    'foodgramng.ddns.net',
     '*'
 ]
 # Quick-start development settings - unsuitable for production
