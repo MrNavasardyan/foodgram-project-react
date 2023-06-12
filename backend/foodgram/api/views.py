@@ -104,7 +104,7 @@ class CustomUserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save(author=author, user=user)
             return Response({'Подписка успешно создана': serializer.data},
-                                status=status.HTTP_201_CREATED)
+                            status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
             if follow.exists():
@@ -162,12 +162,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         model.objects.filter(user=user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
             return RecipeListSerializer
         return RecipeCreateSerializer
-
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=(IsAuthenticated,))
@@ -205,13 +203,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             ShoppingCart.objects.create(user=request.user, recipe=recipe)
             return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
+                            status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)
             if cart.exists():
                 cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))

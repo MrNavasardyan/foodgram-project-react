@@ -113,7 +113,6 @@ class FollowSerializer(serializers.ModelSerializer, FollowMixin):
                 code=status.HTTP_400_BAD_REQUEST)
         return data
 
-
     class Meta:
         model = Follow
         fields = (
@@ -312,20 +311,6 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
-    # def get_is_favorited(self, obj):
-    #     user=self.context.get('request').user
-    #     if isinstance(user, CustomUser):
-    #         return Favorite.objects.filter(user=user, recipe=obj).exists()
-    #     return False
-
-
-    # def get_is_in_shopping_cart(self, obj):
-    #     return (
-    #         self.context.get('request').user.is_authenticated
-    #         and ShoppingCart.objects.filter(
-    #             user=self.context['request'].user,
-    #             recipe=obj).exists()
-    #     )
     def get_is_favorited(self, obj):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
@@ -411,7 +396,6 @@ class CartSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
-
 
     def validate(self, data):
         user = data.get('user')

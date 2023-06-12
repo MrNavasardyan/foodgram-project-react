@@ -23,7 +23,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://foodgramng.ddns.net',
     'http://158.160.65.32',
     'https://158.160.65.32'
-    ]
+]
 
 
 ALLOWED_HOSTS = [
