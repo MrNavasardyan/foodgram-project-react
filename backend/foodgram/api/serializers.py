@@ -313,39 +313,32 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     # def get_is_favorited(self, obj):
-    #     request = self.context.get('request')
-    #     if request.user.is_anonymous:
-    #         return False
-    #     favorite = request.user.favorites.filter(recipe=obj)
-    #     return favorite.exists()
+    #     user=self.context.get('request').user
+    #     if isinstance(user, CustomUser):
+    #         return Favorite.objects.filter(user=user, recipe=obj).exists()
+    #     return False
+
 
     # def get_is_in_shopping_cart(self, obj):
-    #     request = self.context.get('request')
-    #     if request.user.is_anonymous:
-    #         return False
-    #     shopping_cart = request.user.cart.filter(recipe=obj)
-    #     return shopping_cart.exists()
-
+    #     return (
+    #         self.context.get('request').user.is_authenticated
+    #         and ShoppingCart.objects.filter(
+    #             user=self.context['request'].user,
+    #             recipe=obj).exists()
+    #     )
     def get_is_favorited(self, obj):
-        # return (
-        #     self.context.get('request').user.is_authenticated
-        #     and Favorite.objects.filter(user=self.context['request'].user,
-        #                                 recipe=obj).exists()
-
-        # )
-        user=self.context.get('request').user
-        if isinstance(user, CustomUser):
-            return Favorite.objects.filter(user=user, recipe=obj).exists()
-        return False
-
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return Favorite.objects.filter(
+            user=request.user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return (
-            self.context.get('request').user.is_authenticated
-            and ShoppingCart.objects.filter(
-                user=self.context['request'].user,
-                recipe=obj).exists()
-        )
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return ShoppingCart.objects.filter(
+            user=request.user, recipe=obj).exists()
 
     class Meta:
         model = Recipe
