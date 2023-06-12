@@ -33,11 +33,10 @@ http://158.160.65.32
 ### Установка и запуск приложения в контейнерах:
 * docker-compose up -d
 
-### Запускаем миграций, создаём суперпользователя, сбор статики и заполнение БД:
+### Запуск миграций, создание суперпользователя, сбор статики и заполнение БД:
 * docker-compose exec web python manage.py makemigraions
 * docker-compose exec web python manage.py migrate
 * docker-compose exec web python manage.py createsuperuser
-* docker compose exec web python manage.py loaddata new_ingredients.json
 * docker-compose exec web python manage.py collectstatic --no-input
 * docker compose cp ../data/new_ingredients.json web:/app
 * docker compose web exec python manage.py loaddata new_ingredients.json
