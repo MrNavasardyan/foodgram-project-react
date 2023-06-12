@@ -1,5 +1,8 @@
 ![example workflow]()
 # Диплом проект FoodGramm «Продуктовый помощник»
+```
+http://158.160.65.32
+```
 ## Описание:
 ```
 Сервис позволяет публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список "Избранное", а перед походом в магазин - скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
@@ -35,6 +38,7 @@
 * docker-compose exec backend python manage.py createsuperuser
 * docker compose exec web python manage.py loaddata new_ingredients.json
 * docker-compose exec backend python manage.py collectstatic --no-input
-
+* docker compose cp ../data/new_ingredients.json web:/app
+* docker compose web exec python manage.py loaddata new_ingredients.json
 ## Документация к API:
-Полная документация прокта (redoc) доступна по адресу http://foodgramng.ddns.net/api/docs/redoc.html
+Полная документация прокта (redoc) доступна по адресу http://http://158.160.65.32/api/docs/redoc.html/api/docs/redoc.html
