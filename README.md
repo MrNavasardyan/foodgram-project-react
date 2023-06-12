@@ -1,7 +1,7 @@
 ![workflows](https://github.com/MrNavasardyan/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 # Диплом проект FoodGramm «Продуктовый помощник»
 ```
-http://158.160.65.32
+http://158.160.65.32(http://158.160.65.32)
 ```
 ## Описание:
 ```
@@ -42,9 +42,9 @@ http://158.160.65.32
 * docker compose cp ../data/new_ingredients.json web:/app
 * docker compose web exec python manage.py loaddata new_ingredients.json
 ## Документация к API:
-Полная документация прокта (redoc) доступна по адресу http://158.160.65.32/api/docs/redoc.html
+Полная документация прокта (redoc) доступна по адресу http://158.160.65.32/api/docs/redoc.html(http://158.160.65.32/api/docs/redoc.html)
 ###
 Панель администратора
-http://158.160.65.32/admin/
+http://158.160.65.32/admin/(http://158.160.65.32/admin/)
 admin/admin
 .
