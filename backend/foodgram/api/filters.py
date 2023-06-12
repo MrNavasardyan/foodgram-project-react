@@ -18,10 +18,10 @@ class RecipeFilter(filters.FilterSet):
         queryset=CustomUser.objects.all())
 
     is_favorited = filters.BooleanFilter(
-        method='is_favorited', label='favorite',
+        method='is_favorited', label='favorite',field_name='is_favorite'
     )
 
-    is_in_shopping_cart = filters.BooleanFilter(
+    is_in_shopping_cart = filters.BooleanFilter(field_name='is_cart',
         label='shoppings_list', method='is_in_shopping_cart')
 
     tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug',
@@ -43,11 +43,3 @@ class RecipeFilter(filters.FilterSet):
         if value and self.request and self.request.user.is_authenticated:
             return Recipe.objects.filter(cart__user=self.request.user)
         return queryset
-
-
-
-
-    # class Meta:
-    #     model = Recipe
-    #     fields = ('tags', 'author',)
-
