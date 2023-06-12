@@ -15,10 +15,11 @@ CSRF_TRUSTED_ORIGINS = [
     'https://localhost:8000',
     'http://web:8000',
     'http://localhost',
-    'http://localhost'
     'http://*.localhost:8080',
     'http://*.localhost',
     'http://127.0.0.1:8080'
+    'http://backend:8000',
+    'http://localhost:8080'
     ]
 
 
