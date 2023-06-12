@@ -46,5 +46,4 @@ http://158.160.65.32(http://158.160.65.32)
 ###
 Панель администратора
 http://158.160.65.32/admin/(http://158.160.65.32/admin/)
-admin/admin
-.
+admin@admin.io/admin
