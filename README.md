@@ -1,1 +1,40 @@
-# praktikum_new_diplom
+![example workflow]()
+# Диплом проект FoodGramm «Продуктовый помощник»
+## Описание:
+```
+Сервис позволяет публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список "Избранное", а перед походом в магазин - скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
+```
+## Технологии:
+* Python 3.9
+* Django 4.2
+* Django REST framework 3.14.0
+* Djoser 2.1.0
+
+## Как запустить проект:
+
+### Клонировать репозиторий и перейти в него в командной строке:
+* git clone git@github.com:MrNavasardyan/foodgram-project-react.git
+* cd foodgram-project-react/
+
+### Переходим в папку с файлом docker-compose.yaml:
+* cd infra/
+
+### Создаем файл .env с содержимым:
+* DB_ENGINE=django.db.backends.postgresql
+* DB_NAME=postgres
+* POSTGRES_USER=postgres
+* POSTGRES_PASSWORD=postgres
+* DB_HOST=db
+* DB_PORT=5432
+
+### Установка и запуск приложения в контейнерах:
+* docker-compose up -d
+
+### Запускаем миграций, создаём суперпользователя, сбор статики и заполнение БД:
+* docker-compose exec backend python manage.py migrate
+* docker-compose exec backend python manage.py createsuperuser
+* docker compose exec web python manage.py loaddata new_ingredients.json
+* docker-compose exec backend python manage.py collectstatic --no-input
+
+## Документация к API:
+Полная документация прокта (redoc) доступна по адресу http:///api/docs/redoc.html
