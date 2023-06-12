@@ -20,6 +20,10 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8080'
     'http://backend:8000',
     'http://localhost:8080'
+    '158.160.65.32',
+    'http://foodgramng.ddns.net',
+    'https://foodgramng.ddns.net'
+    ''
     ]
 
 
@@ -27,6 +31,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'web',
     'localhost',
+    '158.160.65.32'
+    'foodgramng.ddns.net'
     '*'
 ]
 # Quick-start development settings - unsuitable for production

@@ -37,4 +37,4 @@
 * docker-compose exec backend python manage.py collectstatic --no-input
 
 ## Документация к API:
-Полная документация прокта (redoc) доступна по адресу http:///api/docs/redoc.html
+Полная документация прокта (redoc) доступна по адресу http://foodgramng.ddns.net/api/docs/redoc.html
