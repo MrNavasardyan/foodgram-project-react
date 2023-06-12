@@ -54,11 +54,9 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo -i
-            ls -la
-            pwd
-            docker-compose stop
-            docker-compose rm web
+            cd /home/admin/foodgram-project-react/infra
+            sudo docker-compose stop
+            sudo docker-compose rm web
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -67,4 +65,4 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            docker compose up -d
+            sudo docker compose up -d
