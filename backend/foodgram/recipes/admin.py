@@ -1,14 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import (
-    Tag,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    Favorite,
-    ShoppingCart,
-)
+from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                     ShoppingCart, Tag)
 
 EMPTY_VALUE = settings.DEFAULT_LABEL_VALUE
 

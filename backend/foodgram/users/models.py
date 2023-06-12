@@ -1,9 +1,5 @@
-from django.db import models
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    PermissionsMixin,
-    BaseUserManager,
-)
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
 from django.core import validators
 from django.db import models
 
@@ -81,10 +77,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    @property
-    def is_staff(self):
-        return self.is_superuser
-
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Пользователь'
@@ -92,6 +84,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_staff(self):
+        return self.is_superuser
 
 
 class Follow(models.Model):
@@ -122,3 +118,6 @@ class Follow(models.Model):
                 name='distinct_follow',
             )
         ]
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.author}'

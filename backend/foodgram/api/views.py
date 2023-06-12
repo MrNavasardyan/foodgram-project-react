@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from django.db.models import Sum
 from django.http.response import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -5,38 +7,21 @@ from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from users.models import CustomUser
-from datetime import datetime as dt
-from django.http.response import HttpResponse
-from recipes.models import (
-    ShoppingCart,
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    Tag,
-)
+
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
 from users.models import CustomUser, Follow
+
 from .filters import IngredientLookupFilter, RecipeFilter
 from .pagination import CustomPageNumberPagination
 from .permissions import AdminOrReadOnly, AuthorOrReadOnly
-from .serializers import (
-    CartSerializer,
-    CustomUserSerializer,
-    FavoriteSerializer,
-    FollowSerializer,
-    IngredientSerializer,
-    RecipeCreateSerializer,
-    RecipeListSerializer,
-    TagSerializer,
-    RecipeItemSerializer
-)
+from .serializers import (CartSerializer, CustomUserSerializer,
+                          FavoriteSerializer, FollowSerializer,
+                          IngredientSerializer, RecipeCreateSerializer,
+                          RecipeListSerializer, TagSerializer)
 
 
 class CustomUserViewSet(UserViewSet):
@@ -105,7 +90,7 @@ class CustomUserViewSet(UserViewSet):
             serializer.save(author=author, user=user)
             return Response({'Подписка успешно создана': serializer.data},
                             status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, author=author)
             if follow.exists():
                 follow.delete()
@@ -156,6 +141,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 serializer.to_representation(instance=model_create),
                 status=status.HTTP_201_CREATED,
             )
+        return Response(status=status.HTTP_201_CREATED)
 
     @staticmethod
     def delete_favorite(model, user, recipe):
@@ -180,7 +166,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             return self.post_favorite(Favorite, user, recipe)
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             return self.delete_favorite(
                 Favorite, user, recipe
             )
@@ -204,11 +190,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ShoppingCart.objects.create(user=request.user, recipe=recipe)
             return Response(serializer.data,
                             status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             cart = ShoppingCart.objects.filter(recipe=recipe)
             if cart.exists():
                 cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))

@@ -1,5 +1,3 @@
-from django.db import models
-
 from django.core import validators
 from django.db import models
 
@@ -186,6 +184,9 @@ class Favorite(models.Model):
             )
         ]
 
+    def __str__(self):
+        return f'{self.user} {self.recipe}'
+
 
 class ShoppingCart(models.Model):
     """Модель списка покупок."""
@@ -211,3 +212,6 @@ class ShoppingCart(models.Model):
                 name='distinct_cart',
             )
         ]
+
+    def __str__(self):
+        return f'{self.user} {self.recipe}'
