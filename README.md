@@ -1,4 +1,4 @@
-![workflows](https://github.com/Anastasiya3112/foodgram-project-react/blob/master/.github/workflows/foodgram_workflows.yml/badge.svg)
+![workflows](https://github.com/MrNavasardyan/foodgram-project-react/blob/master/.github/workflows/main.yml)
 # Диплом проект FoodGramm «Продуктовый помощник»
 ```
 http://158.160.65.32
