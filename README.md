@@ -1,4 +1,4 @@
-![workflows](https://github.com/MrNavasardyan/foodgram-project-react/blob/master/.github/workflows/main.yml/badge.svg)
+![workflows](https://github.com/MrNavasardyan/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 # Диплом проект FoodGramm «Продуктовый помощник»
 ```
 http://158.160.65.32
@@ -34,6 +34,7 @@ http://158.160.65.32
 * docker-compose up -d
 
 ### Запускаем миграций, создаём суперпользователя, сбор статики и заполнение БД:
+* docker-compose exec web python manage.py makemigraions
 * docker-compose exec web python manage.py migrate
 * docker-compose exec web python manage.py createsuperuser
 * docker compose exec web python manage.py loaddata new_ingredients.json
