@@ -7,7 +7,7 @@ services:
     env_file:
       - ./.env
   web:
-    image: web_backend
+    image: ngrachik/web_backend
     restart: always
     ports:
      - "8000:8000"
