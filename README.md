@@ -42,3 +42,5 @@ http://158.160.65.32
 * docker compose web exec python manage.py loaddata new_ingredients.json
 ## Документация к API:
 Полная документация прокта (redoc) доступна по адресу http://158.160.65.32/api/docs/redoc.html
+
+.
