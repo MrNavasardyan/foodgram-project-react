@@ -34,13 +34,16 @@ http://158.160.65.32
 * docker-compose up -d
 
 ### Запускаем миграций, создаём суперпользователя, сбор статики и заполнение БД:
-* docker-compose exec backend python manage.py migrate
-* docker-compose exec backend python manage.py createsuperuser
+* docker-compose exec web python manage.py migrate
+* docker-compose exec web python manage.py createsuperuser
 * docker compose exec web python manage.py loaddata new_ingredients.json
-* docker-compose exec backend python manage.py collectstatic --no-input
+* docker-compose exec web python manage.py collectstatic --no-input
 * docker compose cp ../data/new_ingredients.json web:/app
 * docker compose web exec python manage.py loaddata new_ingredients.json
 ## Документация к API:
 Полная документация прокта (redoc) доступна по адресу http://158.160.65.32/api/docs/redoc.html
-
+###
+Панель администратора
+http://158.160.65.32/admin/
+admin/admin
 .
